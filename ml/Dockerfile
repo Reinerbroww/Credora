@@ -7,7 +7,13 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PORT=8000
 
 COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+
+# LightGBM links against the OpenMP runtime (libgomp), which the slim base
+# image does not include.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libgomp1 \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip install --no-cache-dir -r requirements.txt
 
 COPY app.py ./
 COPY model/ ./model/
