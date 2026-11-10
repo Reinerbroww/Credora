@@ -27,15 +27,16 @@ import {
   riskCounts,
 } from "@/lib/analytics";
 import { formatNumber } from "@/lib/format";
+import { useI18n, type Locale } from "@/lib/i18n";
 import { useCredora } from "@/lib/store";
 
 const subscribeToNothing = () => () => {};
 
-function useToday(): string {
+function useToday(locale: Locale): string {
   return useSyncExternalStore(
     subscribeToNothing,
     () =>
-      new Intl.DateTimeFormat("en-GB", {
+      new Intl.DateTimeFormat(locale === "id" ? "id-ID" : "en-GB", {
         weekday: "long",
         day: "numeric",
         month: "long",
@@ -47,10 +48,15 @@ function useToday(): string {
 
 export default function DashboardPage() {
   const { applications, assessments, reviews } = useCredora();
+  const { t, risk, locale } = useI18n();
 
   const counts = riskCounts(applications, assessments);
   const pendingReview = awaitingReviewCount(applications, reviews);
-  const trend = applicationTrend(applications, 6).map((point) => ({
+  const trend = applicationTrend(
+    applications,
+    6,
+    locale === "id" ? "id-ID" : "en-GB",
+  ).map((point) => ({
     label: point.label,
     value: point.value,
   }));
@@ -62,9 +68,9 @@ export default function DashboardPage() {
     .slice(0, 6);
 
   const riskData = [
-    { label: "Low Risk", value: counts.low, color: "#58A878" },
-    { label: "Medium Risk", value: counts.medium, color: "#E5B93F" },
-    { label: "High Risk", value: counts.high, color: "#E45B56" },
+    { label: risk("Low Risk"), value: counts.low, color: "#58A878" },
+    { label: risk("Medium Risk"), value: counts.medium, color: "#E5B93F" },
+    { label: risk("High Risk"), value: counts.high, color: "#E45B56" },
   ];
 
   const assessedShare =
@@ -77,23 +83,25 @@ export default function DashboardPage() {
       : Math.round((counts.high / counts.assessed) * 100);
   const trendTotal = trend.reduce((sum, point) => sum + point.value, 0);
 
-  const today = useToday();
+  const today = useToday(locale);
 
   return (
     <div className="fade-in space-y-6">
       <PageHeader
-        eyebrow="Dashboard"
-        title="Portfolio overview"
-        description={`Monitor application flow and credit risk across the organization.${today ? ` ${today}.` : ""}`}
+        eyebrow={t("dash.eyebrow")}
+        title={t("dash.title")}
+        description={t("dash.description", {
+          today: today ? `${today}.` : "",
+        })}
         actions={
           <>
             <Link href="/portfolio" className="btn-secondary">
               <TrendIcon className="h-4 w-4" />
-              View portfolio
+              {t("dash.viewPortfolio")}
             </Link>
             <Link href="/applications/new" className="btn-primary">
               <PlusIcon className="h-4 w-4" />
-              New application
+              {t("dash.newApplication")}
             </Link>
           </>
         }
@@ -103,29 +111,29 @@ export default function DashboardPage() {
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
-          label="Total Applications"
+          label={t("dash.statTotal")}
           value={formatNumber(applications.length)}
-          hint={`${counts.unassessed} awaiting first assessment`}
+          hint={t("dash.hintTotal", { count: counts.unassessed })}
           icon={<UsersIcon className="h-[18px] w-[18px]" />}
         />
         <StatCard
-          label="Pending Review"
+          label={t("dash.statPending")}
           value={formatNumber(pendingReview)}
-          hint="Awaiting underwriting action"
+          hint={t("dash.hintPending")}
           tone="warning"
           icon={<ClockIcon className="h-[18px] w-[18px]" />}
         />
         <StatCard
-          label="Assessed"
+          label={t("dash.statAssessed")}
           value={formatNumber(counts.assessed)}
-          hint={`${assessedShare}% of all applications`}
+          hint={t("dash.hintAssessed", { percent: assessedShare })}
           tone="sage"
           icon={<ShieldIcon className="h-[18px] w-[18px]" />}
         />
         <StatCard
-          label="High Risk"
+          label={t("dash.statHigh")}
           value={formatNumber(counts.high)}
-          hint={`${highRiskShare}% of assessed portfolio`}
+          hint={t("dash.hintHigh", { percent: highRiskShare })}
           tone="danger"
           icon={<AlertIcon className="h-[18px] w-[18px]" />}
         />
@@ -133,11 +141,11 @@ export default function DashboardPage() {
 
       <div className="grid gap-4 lg:grid-cols-[0.9fr_1.35fr]">
         <SectionCard
-          title="Risk Portfolio Distribution"
-          subtitle="Latest assessment per application"
+          title={t("dash.riskDistTitle")}
+          subtitle={t("dash.riskDistSubtitle")}
           action={
             <Link href="/portfolio" className="btn-ghost">
-              Details
+              {t("dash.details")}
               <ChevronRightIcon className="h-3.5 w-3.5" />
             </Link>
           }
@@ -146,26 +154,26 @@ export default function DashboardPage() {
             <DonutChart
               data={riskData}
               centerValue={formatNumber(counts.assessed)}
-              centerLabel="Assessed"
+              centerLabel={t("dash.assessed")}
             />
             <div className="w-full max-w-[210px]">
               <DonutLegend data={riskData} />
               <div className="mt-4 border-t border-line-soft pt-3 text-[11px] text-muted">
                 {counts.unassessed > 0
-                  ? `${counts.unassessed} application(s) have no assessment yet.`
-                  : "Every application has at least one assessment."}
+                  ? t("dash.unassessedNote", { count: counts.unassessed })
+                  : t("dash.allAssessedNote")}
               </div>
             </div>
           </div>
         </SectionCard>
 
         <SectionCard
-          title="Application Trend"
-          subtitle={`${trendTotal} applications created in the last 6 months`}
+          title={t("dash.trendTitle")}
+          subtitle={t("dash.trendSubtitle", { count: trendTotal })}
           action={
             <span className="inline-flex items-center gap-1.5 rounded-full border border-sage/15 bg-sage/[0.06] px-2.5 py-1 text-[10px] font-medium text-sage">
               <TrendIcon className="h-3 w-3" />
-              Monthly
+              {t("dash.monthly")}
             </span>
           }
         >
@@ -177,20 +185,20 @@ export default function DashboardPage() {
         <div className="flex items-center justify-between gap-3 border-b border-line-soft px-5 py-4">
           <div>
             <h2 className="text-[13.5px] font-semibold text-white">
-              Recent Applications
+              {t("dash.recentTitle")}
             </h2>
             <p className="mt-0.5 text-[11.5px] text-muted">
-              The most recently submitted applications.
+              {t("dash.recentSubtitle")}
             </p>
           </div>
           <Link href="/applications" className="btn-ghost">
             <LayersIcon className="h-3.5 w-3.5" />
-            View all
+            {t("common.viewAll")}
           </Link>
         </div>
         {recent.length === 0 ? (
           <div className="px-5 py-10 text-center text-[12.5px] text-muted">
-            No applications yet. Create the first application to begin.
+            {t("dash.empty")}
           </div>
         ) : (
           <ApplicationTable

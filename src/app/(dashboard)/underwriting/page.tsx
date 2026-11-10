@@ -17,6 +17,7 @@ import {
 } from "@/components/ui";
 import { latestAssessments, latestReviews } from "@/lib/analytics";
 import { displayId, formatDate } from "@/lib/format";
+import { useI18n } from "@/lib/i18n";
 import { useCredora } from "@/lib/store";
 import type { RiskAssessment, ReviewStatus } from "@/lib/types";
 
@@ -24,6 +25,7 @@ type ReviewFilter = "all" | ReviewStatus;
 
 export default function UnderwritingPage() {
   const { applications, assessments, reviews } = useCredora();
+  const { t, reviewStatus: translateReviewStatus } = useI18n();
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<ReviewFilter>("all");
 
@@ -73,22 +75,30 @@ export default function UnderwritingPage() {
   return (
     <div className="fade-in space-y-5">
       <PageHeader
-        eyebrow="Manual review"
-        title="Underwriting Reviews"
-        description="Review assessed applications, verify supporting information, and record the final credit decision with a clear reason."
+        eyebrow={t("uw.eyebrow")}
+        title={t("uw.title")}
+        description={t("uw.description")}
         actions={
           <Link href="/applications" className="btn-secondary">
             <FolderIcon className="h-4 w-4" />
-            All applications
+            {t("uw.allApps")}
           </Link>
         }
       />
 
       <div className="grid gap-3 sm:grid-cols-3">
-        <QueueStat label="Awaiting action" value={pendingCount} tone="warning" />
-        <QueueStat label="Completed reviews" value={completedCount} tone="sage" />
         <QueueStat
-          label="Assessed applications"
+          label={t("uw.awaitingAction")}
+          value={pendingCount}
+          tone="warning"
+        />
+        <QueueStat
+          label={t("uw.completedReviews")}
+          value={completedCount}
+          tone="sage"
+        />
+        <QueueStat
+          label={t("uw.assessedApps")}
           value={latestAssessmentsMap.size}
           tone="default"
         />
@@ -101,42 +111,45 @@ export default function UnderwritingPage() {
             <input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Search by applicant or application ID..."
+              placeholder={t("uw.searchPlaceholder")}
               className="field pl-9"
-              aria-label="Search reviews"
+              aria-label={t("uw.searchAria")}
             />
           </div>
           <select
             value={status}
             onChange={(event) => setStatus(event.target.value as ReviewFilter)}
             className="field sm:w-[180px]"
-            aria-label="Filter by review status"
+            aria-label={t("uw.filterAria")}
           >
-            <option value="all">All review statuses</option>
-            <option value="Pending">Pending</option>
-            <option value="In Review">In Review</option>
-            <option value="Completed">Completed</option>
+            <option value="all">{t("uw.allStatuses")}</option>
+            <option value="Pending">{translateReviewStatus("Pending")}</option>
+            <option value="In Review">
+              {translateReviewStatus("In Review")}
+            </option>
+            <option value="Completed">
+              {translateReviewStatus("Completed")}
+            </option>
           </select>
         </div>
 
         <div className="flex items-center justify-between px-4 py-2.5">
           <p className="text-[11.5px] text-muted">
-            <span className="font-medium text-white">{rows.length}</span> review
-            {rows.length === 1 ? "" : "s"} shown
+            {t("uw.rowsShown", { count: rows.length })}
           </p>
           <p className="hidden text-[10.5px] text-muted/70 sm:block">
-            Sorted by latest assessment
+            {t("uw.sorted")}
           </p>
         </div>
 
         {rows.length === 0 ? (
           <EmptyState
             icon={<ClipboardCheckIcon className="h-5 w-5" />}
-            title="Nothing to review"
-            description="Assessed applications will appear here for manual underwriting review."
+            title={t("uw.nothingTitle")}
+            description={t("uw.nothingDesc")}
             action={
               <Link href="/applications" className="btn-primary">
-                Go to Applications
+                {t("uw.goApps")}
               </Link>
             }
           />
@@ -145,12 +158,12 @@ export default function UnderwritingPage() {
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>Application ID</th>
-                  <th>Applicant</th>
-                  <th>Risk category</th>
-                  <th>Review status</th>
-                  <th>Applied</th>
-                  <th className="text-right">Action</th>
+                  <th>{t("table.appId")}</th>
+                  <th>{t("table.applicant")}</th>
+                  <th>{t("table.risk")}</th>
+                  <th>{t("uw.colReviewStatus")}</th>
+                  <th>{t("table.applied")}</th>
+                  <th className="text-right">{t("table.action")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -186,7 +199,7 @@ export default function UnderwritingPage() {
                         href={`/underwriting/${application.id}`}
                         className="inline-flex items-center gap-1 text-[11.5px] font-medium text-sage transition-colors hover:text-sage-bright"
                       >
-                        Review
+                        {t("table.review")}
                         <ChevronRightIcon className="h-3.5 w-3.5" />
                       </Link>
                     </td>

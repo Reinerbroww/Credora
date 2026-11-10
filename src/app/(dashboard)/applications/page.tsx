@@ -18,6 +18,7 @@ import {
 } from "@/components/ui";
 import { APPLICATION_STATUSES, latestAssessments } from "@/lib/analytics";
 import { displayId } from "@/lib/format";
+import { useI18n } from "@/lib/i18n";
 import { useSearch } from "@/lib/search";
 import { useCredora } from "@/lib/store";
 import type { ApplicationStatus, RiskCategory } from "@/lib/types";
@@ -29,6 +30,7 @@ type RiskFilter = "all" | RiskCategory | "unassessed";
 export default function ApplicationsPage() {
   const { applications, assessments } = useCredora();
   const { query: search, setQuery: setSearch } = useSearch();
+  const { t, status: translateStatus, risk: translateRisk } = useI18n();
   const [status, setStatus] = useState<ApplicationStatus | "all">("all");
   const [risk, setRisk] = useState<RiskFilter>("all");
   const [page, setPage] = useState(1);
@@ -78,13 +80,13 @@ export default function ApplicationsPage() {
   return (
     <div className="fade-in space-y-5">
       <PageHeader
-        eyebrow="Credit operations"
-        title="Application Management"
-        description="Create, search, and track customer credit applications. Assessment results are attached to each application as a history."
+        eyebrow={t("apps.eyebrow")}
+        title={t("apps.title")}
+        description={t("apps.description")}
         actions={
           <Link href="/applications/new" className="btn-primary">
             <PlusIcon className="h-4 w-4" />
-            Add Application
+            {t("apps.add")}
           </Link>
         }
       />
@@ -99,9 +101,9 @@ export default function ApplicationsPage() {
                 setSearch(event.target.value);
                 setPage(1);
               }}
-              placeholder="Search by applicant name, email, or application ID..."
+              placeholder={t("apps.searchPlaceholder")}
               className="field pl-9"
-              aria-label="Search applications"
+              aria-label={t("apps.searchAria")}
             />
           </div>
 
@@ -115,12 +117,12 @@ export default function ApplicationsPage() {
                   setPage(1);
                 }}
                 className="field min-w-[160px] pl-8"
-                aria-label="Filter by status"
+                aria-label={t("apps.filterStatusAria")}
               >
-                <option value="all">All statuses</option>
+                <option value="all">{t("apps.allStatuses")}</option>
                 {APPLICATION_STATUSES.map((option) => (
                   <option key={option} value={option}>
-                    {option}
+                    {translateStatus(option)}
                   </option>
                 ))}
               </select>
@@ -133,25 +135,24 @@ export default function ApplicationsPage() {
                 setPage(1);
               }}
               className="field min-w-[150px]"
-              aria-label="Filter by risk category"
+              aria-label={t("apps.filterRiskAria")}
             >
-              <option value="all">All risk levels</option>
-              <option value="Low Risk">Low Risk</option>
-              <option value="Medium Risk">Medium Risk</option>
-              <option value="High Risk">High Risk</option>
-              <option value="unassessed">Not assessed</option>
+              <option value="all">{t("apps.allRisk")}</option>
+              <option value="Low Risk">{translateRisk("Low Risk")}</option>
+              <option value="Medium Risk">{translateRisk("Medium Risk")}</option>
+              <option value="High Risk">{translateRisk("High Risk")}</option>
+              <option value="unassessed">{t("apps.notAssessed")}</option>
             </select>
           </div>
         </div>
 
         <div className="flex items-center justify-between gap-3 px-4 py-2.5">
           <p className="text-[11.5px] text-muted">
-            <span className="font-medium text-white">{filtered.length}</span>{" "}
-            application{filtered.length === 1 ? "" : "s"} found
+            {t("apps.found", { count: filtered.length })}
           </p>
           {hasFilters && (
             <button type="button" onClick={resetFilters} className="btn-ghost">
-              Clear filters
+              {t("apps.clearFilters")}
             </button>
           )}
         </div>
@@ -159,17 +160,17 @@ export default function ApplicationsPage() {
         {visible.length === 0 ? (
           <EmptyState
             icon={<FolderIcon className="h-5 w-5" />}
-            title="No applications match"
-            description="Adjust the search term or filters, or create a new credit application."
+            title={t("apps.noMatchTitle")}
+            description={t("apps.noMatchDesc")}
             action={
               hasFilters ? (
                 <button type="button" onClick={resetFilters} className="btn-secondary">
-                  Reset filters
+                  {t("apps.resetFilters")}
                 </button>
               ) : (
                 <Link href="/applications/new" className="btn-primary">
                   <PlusIcon className="h-4 w-4" />
-                  Add Application
+                  {t("apps.add")}
                 </Link>
               )
             }
@@ -181,11 +182,11 @@ export default function ApplicationsPage() {
         {filtered.length > 0 && (
           <div className="flex flex-col items-center justify-between gap-3 border-t border-line-soft px-4 py-3 sm:flex-row">
             <p className="text-[11.5px] text-muted">
-              Showing{" "}
-              <span className="font-medium text-white">
-                {start + 1}–{Math.min(start + PAGE_SIZE, filtered.length)}
-              </span>{" "}
-              of {filtered.length}
+              {t("apps.showing", {
+                start: start + 1,
+                end: Math.min(start + PAGE_SIZE, filtered.length),
+                total: filtered.length,
+              })}
             </p>
             <div className="flex items-center gap-2">
               <button
@@ -193,13 +194,12 @@ export default function ApplicationsPage() {
                 onClick={() => setPage((value) => Math.max(1, value - 1))}
                 disabled={currentPage === 1}
                 className="btn-secondary px-2.5 py-1.5 disabled:cursor-not-allowed disabled:opacity-40"
-                aria-label="Previous page"
+                aria-label={t("apps.prev")}
               >
                 <ChevronLeftIcon className="h-4 w-4" />
               </button>
               <span className="text-[11.5px] text-muted">
-                Page <span className="font-medium text-white">{currentPage}</span> of{" "}
-                {totalPages}
+                {t("apps.pageOf", { page: currentPage, total: totalPages })}
               </span>
               <button
                 type="button"
@@ -208,7 +208,7 @@ export default function ApplicationsPage() {
                 }
                 disabled={currentPage === totalPages}
                 className="btn-secondary px-2.5 py-1.5 disabled:cursor-not-allowed disabled:opacity-40"
-                aria-label="Next page"
+                aria-label={t("apps.next")}
               >
                 <ChevronRightIcon className="h-4 w-4" />
               </button>

@@ -13,6 +13,7 @@ import {
 } from "@/components/icons";
 import { Card, PageHeader } from "@/components/ui";
 import { formatCurrency } from "@/lib/format";
+import { useI18n } from "@/lib/i18n";
 import { useCredora } from "@/lib/store";
 import type {
   DefaultFlag,
@@ -51,35 +52,30 @@ const INITIAL_FORM: FormState = {
   cb_person_default_on_file: "N",
 };
 
-const HOME_OPTIONS: Array<{ value: HomeOwnership; label: string }> = [
-  { value: "RENT", label: "Rent" },
-  { value: "OWN", label: "Own" },
-  { value: "MORTGAGE", label: "Mortgage" },
-  { value: "OTHER", label: "Other" },
+const HOME_OPTIONS: HomeOwnership[] = ["RENT", "OWN", "MORTGAGE", "OTHER"];
+
+const INTENT_OPTIONS: LoanIntent[] = [
+  "PERSONAL",
+  "EDUCATION",
+  "MEDICAL",
+  "VENTURE",
+  "HOMEIMPROVEMENT",
+  "DEBTCONSOLIDATION",
 ];
 
-const INTENT_OPTIONS: Array<{ value: LoanIntent; label: string }> = [
-  { value: "PERSONAL", label: "Personal" },
-  { value: "EDUCATION", label: "Education" },
-  { value: "MEDICAL", label: "Medical" },
-  { value: "VENTURE", label: "Business venture" },
-  { value: "HOMEIMPROVEMENT", label: "Home improvement" },
-  { value: "DEBTCONSOLIDATION", label: "Debt consolidation" },
+const GRADE_OPTIONS: Array<{ value: LoanGrade; labelKey: string }> = [
+  { value: "A", labelKey: "newapp.gradeA" },
+  { value: "B", labelKey: "newapp.gradeB" },
+  { value: "C", labelKey: "newapp.gradeC" },
+  { value: "D", labelKey: "newapp.gradeD" },
+  { value: "E", labelKey: "newapp.gradeE" },
+  { value: "F", labelKey: "newapp.gradeF" },
+  { value: "G", labelKey: "newapp.gradeG" },
 ];
 
-const GRADE_OPTIONS: Array<{ value: LoanGrade; label: string }> = [
-  { value: "A", label: "A — lowest risk" },
-  { value: "B", label: "B" },
-  { value: "C", label: "C" },
-  { value: "D", label: "D" },
-  { value: "E", label: "E" },
-  { value: "F", label: "F" },
-  { value: "G", label: "G — highest risk" },
-];
-
-const DEFAULT_OPTIONS: Array<{ value: DefaultFlag; label: string }> = [
-  { value: "N", label: "No record" },
-  { value: "Y", label: "Yes — default on file" },
+const DEFAULT_OPTIONS: Array<{ value: DefaultFlag; labelKey: string }> = [
+  { value: "N", labelKey: "newapp.defaultNo" },
+  { value: "Y", labelKey: "newapp.defaultYes" },
 ];
 
 function toNumber(value: string): number {
@@ -101,6 +97,7 @@ function formatThousands(value: string): string {
 export default function AddApplicationPage() {
   const router = useRouter();
   const { addApplication } = useCredora();
+  const { t, home, intent } = useI18n();
   const [form, setForm] = useState<FormState>(INITIAL_FORM);
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
   const [submitting, setSubmitting] = useState(false);
@@ -139,33 +136,32 @@ export default function AddApplicationPage() {
     const creditHistory = toNumber(form.cb_person_cred_hist_length);
 
     if (form.applicant_name.trim().length < 3) {
-      next.applicant_name = "Enter the applicant's full name.";
+      next.applicant_name = t("newapp.errName");
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.applicant_email.trim())) {
-      next.applicant_email = "Enter a valid email address.";
+      next.applicant_email = t("newapp.errEmail");
     }
     if (!Number.isFinite(age) || age < 18 || age > 80) {
-      next.age = "Age must be between 18 and 80.";
+      next.age = t("newapp.errAge");
     }
     if (!Number.isFinite(incomeValue) || incomeValue <= 0) {
-      next.person_income = "Income must be greater than zero.";
+      next.person_income = t("newapp.errIncome");
     }
     if (!Number.isFinite(loanValue) || loanValue <= 0) {
-      next.loan_amnt = "Loan amount must be greater than zero.";
+      next.loan_amnt = t("newapp.errLoan");
     }
     if (!Number.isFinite(rate) || rate <= 0 || rate > 60) {
-      next.loan_int_rate = "Interest rate must be between 0 and 60.";
+      next.loan_int_rate = t("newapp.errRate");
     }
     if (!Number.isFinite(employment) || employment < 0 || employment > 60) {
-      next.employment_length = "Employment length must be between 0 and 60 years.";
+      next.employment_length = t("newapp.errEmployment");
     }
     if (
       !Number.isFinite(creditHistory) ||
       creditHistory < 0 ||
       creditHistory > 80
     ) {
-      next.cb_person_cred_hist_length =
-        "Credit history length must be between 0 and 80 years.";
+      next.cb_person_cred_hist_length = t("newapp.errCreditHistory");
     }
 
     setErrors(next);
@@ -198,8 +194,7 @@ export default function AddApplicationPage() {
     } catch {
       setErrors((current) => ({
         ...current,
-        applicant_name:
-          "Unable to save the application. Please check the connection and try again.",
+        applicant_name: t("newapp.errSave"),
       }));
       setSubmitting(false);
     }
@@ -208,12 +203,12 @@ export default function AddApplicationPage() {
   return (
     <div className="fade-in space-y-5">
       <PageHeader
-        eyebrow="New record"
-        title="Add Application"
-        description="Capture the applicant, financial, and employment details required by the risk assessment model. Fields marked with * are required."
+        eyebrow={t("newapp.eyebrow")}
+        title={t("newapp.title")}
+        description={t("newapp.description")}
         actions={
           <Link href="/applications" className="btn-secondary">
-            Cancel
+            {t("common.cancel")}
           </Link>
         }
       />
@@ -227,10 +222,10 @@ export default function AddApplicationPage() {
               </span>
               <div>
                 <h2 className="text-[13.5px] font-semibold text-white">
-                  Customer information
+                  {t("newapp.customer")}
                 </h2>
                 <p className="text-[11px] text-muted">
-                  Identity and household details of the applicant.
+                  {t("newapp.customerDesc")}
                 </p>
               </div>
             </div>
@@ -238,14 +233,14 @@ export default function AddApplicationPage() {
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="sm:col-span-2">
                 <label htmlFor="applicant_name" className="label">
-                  Full name *
+                  {t("newapp.fullName")}
                 </label>
                 <input
                   id="applicant_name"
                   value={form.applicant_name}
                   onChange={(event) => updateField("applicant_name", event.target.value)}
                   className="field"
-                  placeholder="e.g. Aisyah Putri"
+                  placeholder={t("newapp.fullNamePlaceholder")}
                 />
                 {errors.applicant_name && (
                   <p className="mt-1 text-[11px] text-[#f3938f]">
@@ -256,7 +251,7 @@ export default function AddApplicationPage() {
 
               <div className="sm:col-span-2">
                 <label htmlFor="applicant_email" className="label">
-                  Email address *
+                  {t("newapp.email")}
                 </label>
                 <input
                   id="applicant_email"
@@ -264,7 +259,7 @@ export default function AddApplicationPage() {
                   value={form.applicant_email}
                   onChange={(event) => updateField("applicant_email", event.target.value)}
                   className="field"
-                  placeholder="name@mail.com"
+                  placeholder={t("newapp.emailPlaceholder")}
                 />
                 {errors.applicant_email && (
                   <p className="mt-1 text-[11px] text-[#f3938f]">
@@ -275,7 +270,7 @@ export default function AddApplicationPage() {
 
               <div>
                 <label htmlFor="age" className="label">
-                  Age *
+                  {t("newapp.age")}
                 </label>
                 <input
                   id="age"
@@ -285,7 +280,7 @@ export default function AddApplicationPage() {
                     updateField("age", event.target.value.replace(/[^\d]/g, ""))
                   }
                   className="field"
-                  placeholder="e.g. 29"
+                  placeholder={t("newapp.agePlaceholder")}
                 />
                 {errors.age && (
                   <p className="mt-1 text-[11px] text-[#f3938f]">{errors.age}</p>
@@ -294,7 +289,7 @@ export default function AddApplicationPage() {
 
               <div>
                 <label htmlFor="home_ownership" className="label">
-                  Home ownership
+                  {t("newapp.homeOwnership")}
                 </label>
                 <select
                   id="home_ownership"
@@ -305,8 +300,8 @@ export default function AddApplicationPage() {
                   className="field"
                 >
                   {HOME_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
+                    <option key={option} value={option}>
+                      {home(option)}
                     </option>
                   ))}
                 </select>
@@ -321,10 +316,10 @@ export default function AddApplicationPage() {
               </span>
               <div>
                 <h2 className="text-[13.5px] font-semibold text-white">
-                  Financial information
+                  {t("newapp.financial")}
                 </h2>
                 <p className="text-[11px] text-muted">
-                  Income, loan amount, and interest assumptions.
+                  {t("newapp.financialDesc")}
                 </p>
               </div>
             </div>
@@ -332,7 +327,7 @@ export default function AddApplicationPage() {
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label htmlFor="person_income" className="label">
-                  Annual income (IDR) *
+                  {t("newapp.annualIncome")}
                 </label>
                 <input
                   id="person_income"
@@ -342,7 +337,7 @@ export default function AddApplicationPage() {
                     updateField("person_income", formatThousands(event.target.value))
                   }
                   className="field"
-                  placeholder="e.g. 12.000.000"
+                  placeholder={t("newapp.incomePlaceholder")}
                 />
                 {errors.person_income && (
                   <p className="mt-1 text-[11px] text-[#f3938f]">
@@ -353,7 +348,7 @@ export default function AddApplicationPage() {
 
               <div>
                 <label htmlFor="loan_amnt" className="label">
-                  Requested loan amount (IDR) *
+                  {t("newapp.loanAmount")}
                 </label>
                 <input
                   id="loan_amnt"
@@ -363,7 +358,7 @@ export default function AddApplicationPage() {
                     updateField("loan_amnt", formatThousands(event.target.value))
                   }
                   className="field"
-                  placeholder="e.g. 5.000.000"
+                  placeholder={t("newapp.loanPlaceholder")}
                 />
                 {errors.loan_amnt && (
                   <p className="mt-1 text-[11px] text-[#f3938f]">{errors.loan_amnt}</p>
@@ -372,7 +367,7 @@ export default function AddApplicationPage() {
 
               <div>
                 <label htmlFor="loan_int_rate" className="label">
-                  Loan interest rate (%) *
+                  {t("newapp.interestRate")}
                 </label>
                 <input
                   id="loan_int_rate"
@@ -380,7 +375,7 @@ export default function AddApplicationPage() {
                   value={form.loan_int_rate}
                   onChange={(event) => updateField("loan_int_rate", event.target.value)}
                   className="field"
-                  placeholder="e.g. 14.5"
+                  placeholder={t("newapp.ratePlaceholder")}
                 />
                 {errors.loan_int_rate && (
                   <p className="mt-1 text-[11px] text-[#f3938f]">
@@ -391,7 +386,7 @@ export default function AddApplicationPage() {
 
               <div>
                 <label htmlFor="loan_intent" className="label">
-                  Loan purpose
+                  {t("newapp.loanPurpose")}
                 </label>
                 <select
                   id="loan_intent"
@@ -400,8 +395,8 @@ export default function AddApplicationPage() {
                   className="field"
                 >
                   {INTENT_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
+                    <option key={option} value={option}>
+                      {intent(option)}
                     </option>
                   ))}
                 </select>
@@ -409,7 +404,7 @@ export default function AddApplicationPage() {
 
               <div>
                 <label htmlFor="loan_grade" className="label">
-                  Loan grade *
+                  {t("newapp.loanGrade")}
                 </label>
                 <select
                   id="loan_grade"
@@ -419,7 +414,7 @@ export default function AddApplicationPage() {
                 >
                   {GRADE_OPTIONS.map((option) => (
                     <option key={option.value} value={option.value}>
-                      {option.label}
+                      {t(option.labelKey)}
                     </option>
                   ))}
                 </select>
@@ -427,7 +422,7 @@ export default function AddApplicationPage() {
 
               <div>
                 <label htmlFor="cb_person_cred_hist_length" className="label">
-                  Credit history length (years) *
+                  {t("newapp.creditHistory")}
                 </label>
                 <input
                   id="cb_person_cred_hist_length"
@@ -451,7 +446,7 @@ export default function AddApplicationPage() {
 
               <div>
                 <label htmlFor="cb_person_default_on_file" className="label">
-                  Historical default record
+                  {t("newapp.defaultRecord")}
                 </label>
                 <select
                   id="cb_person_default_on_file"
@@ -463,7 +458,7 @@ export default function AddApplicationPage() {
                 >
                   {DEFAULT_OPTIONS.map((option) => (
                     <option key={option.value} value={option.value}>
-                      {option.label}
+                      {t(option.labelKey)}
                     </option>
                   ))}
                 </select>
@@ -478,10 +473,10 @@ export default function AddApplicationPage() {
               </span>
               <div>
                 <h2 className="text-[13.5px] font-semibold text-white">
-                  Employment information
+                  {t("newapp.employment")}
                 </h2>
                 <p className="text-[11px] text-muted">
-                  Employment stability is a key risk signal.
+                  {t("newapp.employmentDesc")}
                 </p>
               </div>
             </div>
@@ -489,7 +484,7 @@ export default function AddApplicationPage() {
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label htmlFor="employment_length" className="label">
-                  Employment length (years) *
+                  {t("newapp.employmentLength")}
                 </label>
                 <input
                   id="employment_length"
@@ -499,7 +494,7 @@ export default function AddApplicationPage() {
                     updateField("employment_length", event.target.value)
                   }
                   className="field"
-                  placeholder="e.g. 3.5"
+                  placeholder={t("newapp.employmentPlaceholder")}
                 />
                 {errors.employment_length && (
                   <p className="mt-1 text-[11px] text-[#f3938f]">
@@ -514,21 +509,27 @@ export default function AddApplicationPage() {
         <div className="space-y-4 lg:sticky lg:top-[88px] lg:self-start">
           <Card className="p-5">
             <h2 className="text-[13px] font-semibold text-white">
-              Application summary
+              {t("newapp.summary")}
             </h2>
             <div className="mt-3 space-y-2.5">
-              <SummaryRow label="Applicant" value={form.applicant_name || "—"} />
-              <SummaryRow label="Annual income" value={income > 0 ? formatCurrency(income) : "—"} />
-              <SummaryRow label="Loan amount" value={loan > 0 ? formatCurrency(loan) : "—"} />
+              <SummaryRow label={t("newapp.summaryApplicant")} value={form.applicant_name || "—"} />
               <SummaryRow
-                label="Loan-to-income"
+                label={t("newapp.summaryIncome")}
+                value={income > 0 ? formatCurrency(income) : "—"}
+              />
+              <SummaryRow
+                label={t("newapp.summaryLoan")}
+                value={loan > 0 ? formatCurrency(loan) : "—"}
+              />
+              <SummaryRow
+                label={t("newapp.summaryRatio")}
                 value={ratio > 0 ? `${(ratio * 100).toFixed(1)}%` : "—"}
               />
             </div>
 
             <div className="mt-4">
               <div className="mb-1.5 flex items-center justify-between text-[11px]">
-                <span className="text-muted">Form completion</span>
+                <span className="text-muted">{t("newapp.completion")}</span>
                 <span className="stat-number font-medium text-white">{completion}%</span>
               </div>
               <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.05]">
@@ -545,13 +546,13 @@ export default function AddApplicationPage() {
               className="btn-primary mt-5 w-full"
             >
               <CheckIcon className="h-4 w-4" />
-              {submitting ? "Saving..." : "Save Application"}
+              {submitting ? t("newapp.saving") : t("newapp.save")}
             </button>
             <Link
               href="/applications"
               className="mt-2 flex w-full items-center justify-center rounded-lg px-3 py-2 text-[12px] font-medium text-muted transition-colors hover:text-white"
             >
-              Cancel and return
+              {t("newapp.cancelReturn")}
             </Link>
           </Card>
 
@@ -560,13 +561,10 @@ export default function AddApplicationPage() {
               <AlertIcon className="mt-0.5 h-4 w-4 shrink-0 text-risk-mid" />
               <div>
                 <p className="text-[12px] font-medium text-white">
-                  Field validation note
+                  {t("newapp.noteTitle")}
                 </p>
                 <p className="mt-1 text-[11px] leading-relaxed text-muted">
-                  Fields mirror the 22-feature LightGBM contract. Monetary inputs
-                  are entered in IDR and converted to the model&apos;s USD-scale
-                  before scoring. Do not enter real customer data into this demo
-                  workspace.
+                  {t("newapp.noteBody")}
                 </p>
               </div>
             </div>
@@ -574,7 +572,7 @@ export default function AddApplicationPage() {
 
           <div className="flex items-center justify-center gap-1.5 text-[10.5px] text-muted/60">
             <ArrowRightIcon className="h-3 w-3" />
-            Saving opens the application detail page.
+            {t("newapp.saveHint")}
           </div>
         </div>
       </form>

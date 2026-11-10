@@ -7,11 +7,13 @@ import { FullscreenLoader } from "@/components/fullscreen-loader";
 import { Sidebar } from "@/components/sidebar";
 import { Topbar } from "@/components/topbar";
 import { SearchProvider } from "@/lib/search";
+import { useI18n } from "@/lib/i18n";
 import { useCredora } from "@/lib/store";
 
 export function DashboardShell({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { ready, session } = useCredora();
+  const { t } = useI18n();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
@@ -34,7 +36,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           <div className="fixed inset-0 z-50 lg:hidden">
             <button
               type="button"
-              aria-label="Close navigation"
+              aria-label={t("shell.closeNav")}
               onClick={() => setMobileOpen(false)}
               className="absolute inset-0 bg-black/70 backdrop-blur-sm"
             />
@@ -42,7 +44,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               <button
                 type="button"
                 onClick={() => setMobileOpen(false)}
-                aria-label="Close navigation"
+                aria-label={t("shell.closeNav")}
                 className="absolute right-3 top-4 z-10 grid h-8 w-8 place-items-center rounded-lg border border-line bg-near-black/60 text-muted"
               >
                 <CloseIcon className="h-4 w-4" />
@@ -59,8 +61,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           </main>
           <footer className="border-t border-line/60 px-4 py-4 text-[10.5px] text-muted/60 sm:px-6 lg:px-8">
             <div className="mx-auto flex max-w-[1240px] flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-              <span>Credora · Credit Intelligence Platform</span>
-              <span>Predictions are decision support, not automated credit decisions.</span>
+              <span>{t("shell.footerLeft")}</span>
+              <span>{t("shell.footerRight")}</span>
             </div>
           </footer>
         </div>

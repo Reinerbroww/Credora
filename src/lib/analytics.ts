@@ -100,6 +100,7 @@ export interface TrendPoint {
 export function applicationTrend(
   applications: Application[],
   months = 6,
+  locale = "en-GB",
 ): TrendPoint[] {
   const now = new Date();
   const points: TrendPoint[] = [];
@@ -109,7 +110,7 @@ export function applicationTrend(
     const key = `${date.getFullYear()}-${date.getMonth()}`;
     points.push({
       key,
-      label: new Intl.DateTimeFormat("en-GB", { month: "short" }).format(date),
+      label: new Intl.DateTimeFormat(locale, { month: "short" }).format(date),
       value: 0,
     });
   }

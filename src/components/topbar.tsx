@@ -4,10 +4,12 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { MenuIcon, SearchIcon } from "@/components/icons";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { NotificationsMenu } from "@/components/notifications";
 import { Avatar } from "@/components/ui";
 import { getPageMeta } from "@/lib/nav";
 import { useSearch } from "@/lib/search";
+import { useI18n } from "@/lib/i18n";
 import { useCredora } from "@/lib/store";
 
 export function Topbar({ onMenu }: { onMenu: () => void }) {
@@ -15,6 +17,7 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
   const router = useRouter();
   const { session } = useCredora();
   const { query, setQuery } = useSearch();
+  const { t, role } = useI18n();
   const [draft, setDraft] = useState(query);
   const meta = getPageMeta(pathname);
 
@@ -31,17 +34,17 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
           type="button"
           onClick={onMenu}
           className="grid h-9 w-9 place-items-center rounded-lg border border-line text-muted transition-colors hover:text-white lg:hidden"
-          aria-label="Open navigation"
+          aria-label={t("topbar.openNav")}
         >
           <MenuIcon className="h-[18px] w-[18px]" />
         </button>
 
         <div className="min-w-0">
           <p className="hidden text-[10px] font-medium uppercase tracking-[0.16em] text-muted/70 sm:block">
-            {meta.section}
+            {t(meta.sectionKey)}
           </p>
           <p className="truncate text-[13.5px] font-semibold text-white">
-            {meta.title}
+            {t(meta.titleKey)}
           </p>
         </div>
 
@@ -56,16 +59,18 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
           <input
             value={draft}
             onChange={(event) => setDraft(event.target.value)}
-            placeholder="Search applications..."
+            placeholder={t("topbar.searchPlaceholder")}
             className="field h-9 py-0 pl-9 pr-3 text-[12.5px]"
-            aria-label="Search applications"
+            aria-label={t("topbar.searchAria")}
           />
         </form>
 
         <span className="hidden items-center gap-1.5 rounded-full border border-sage/15 bg-sage/[0.06] px-2.5 py-1 text-[10px] font-medium text-sage xl:inline-flex">
           <span className="h-1.5 w-1.5 rounded-full bg-sage" />
-          Demo data
+          {t("topbar.demoData")}
         </span>
+
+        <LanguageSwitcher />
 
         <NotificationsMenu />
 
@@ -73,13 +78,16 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
           href="/settings"
           className="flex items-center gap-2.5 rounded-lg border border-line bg-white/[0.02] py-1 pl-1 pr-2.5 transition-colors hover:border-sage/25 hover:bg-white/[0.04]"
         >
-          <Avatar name={session?.full_name ?? "Credora User"} className="h-7 w-7 text-[10px]" />
+          <Avatar
+            name={session?.full_name ?? t("common.credoraUser")}
+            className="h-7 w-7 text-[10px]"
+          />
           <span className="hidden leading-tight sm:block">
             <span className="block max-w-[120px] truncate text-[11.5px] font-medium text-white">
-              {session?.full_name ?? "Credora User"}
+              {session?.full_name ?? t("common.credoraUser")}
             </span>
             <span className="block text-[10px] text-muted">
-              {session?.role ?? "Risk Analyst"}
+              {role(session?.role ?? "Risk Analyst")}
             </span>
           </span>
         </Link>

@@ -8,48 +8,48 @@ import {
 } from "@/components/icons";
 
 export interface NavItem {
-  label: string;
+  labelKey: string;
   href: string;
   icon: ComponentType<SVGProps<SVGSVGElement>>;
 }
 
 export const NAV_ITEMS: NavItem[] = [
-  { label: "Overview", href: "/dashboard", icon: GridIcon },
-  { label: "Applications", href: "/applications", icon: LayersIcon },
-  { label: "Portfolio Analytics", href: "/portfolio", icon: ChartIcon },
-  { label: "Underwriting Reviews", href: "/underwriting", icon: ClipboardCheckIcon },
-  { label: "Settings", href: "/settings", icon: SettingsIcon },
+  { labelKey: "nav.overview", href: "/dashboard", icon: GridIcon },
+  { labelKey: "nav.applications", href: "/applications", icon: LayersIcon },
+  { labelKey: "nav.portfolio", href: "/portfolio", icon: ChartIcon },
+  { labelKey: "nav.underwriting", href: "/underwriting", icon: ClipboardCheckIcon },
+  { labelKey: "nav.settings", href: "/settings", icon: SettingsIcon },
 ];
 
 interface PageMeta {
-  title: string;
-  section: string;
+  titleKey: string;
+  sectionKey: string;
 }
 
 export function getPageMeta(pathname: string): PageMeta {
   if (pathname.startsWith("/applications/new")) {
-    return { title: "Add Application", section: "Applications" };
+    return { titleKey: "page.addApplication", sectionKey: "section.applications" };
   }
   if (/^\/applications\/[^/]+\/assessment/.test(pathname)) {
-    return { title: "Risk Assessment", section: "Applications" };
+    return { titleKey: "page.riskAssessment", sectionKey: "section.applications" };
   }
   if (/^\/applications\/[^/]+/.test(pathname)) {
-    return { title: "Application Detail", section: "Applications" };
+    return { titleKey: "page.applicationDetail", sectionKey: "section.applications" };
   }
   if (pathname.startsWith("/applications")) {
-    return { title: "Applications", section: "Workspace" };
+    return { titleKey: "page.applications", sectionKey: "section.workspace" };
   }
   if (/^\/underwriting\/[^/]+/.test(pathname)) {
-    return { title: "Review Detail", section: "Underwriting Reviews" };
+    return { titleKey: "page.reviewDetail", sectionKey: "section.underwriting" };
   }
   if (pathname.startsWith("/underwriting")) {
-    return { title: "Underwriting Reviews", section: "Workspace" };
+    return { titleKey: "page.underwriting", sectionKey: "section.workspace" };
   }
   if (pathname.startsWith("/portfolio")) {
-    return { title: "Portfolio Analytics", section: "Workspace" };
+    return { titleKey: "page.portfolio", sectionKey: "section.workspace" };
   }
   if (pathname.startsWith("/settings")) {
-    return { title: "Settings", section: "Workspace" };
+    return { titleKey: "page.settings", sectionKey: "section.workspace" };
   }
-  return { title: "Overview", section: "Workspace" };
+  return { titleKey: "page.overview", sectionKey: "section.workspace" };
 }

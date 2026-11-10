@@ -9,6 +9,7 @@ import {
   formatCurrency,
   formatDate,
 } from "@/lib/format";
+import { useI18n } from "@/lib/i18n";
 import type { Application, RiskAssessment } from "@/lib/types";
 
 export function ApplicationTable({
@@ -21,19 +22,20 @@ export function ApplicationTable({
   showApplicant?: boolean;
 }) {
   const latest = latestAssessments(assessments);
+  const { t } = useI18n();
 
   return (
     <div className="table-shell">
       <table className="data-table">
         <thead>
           <tr>
-            <th>Application ID</th>
-            {showApplicant && <th>Applicant</th>}
-            <th>Applied</th>
-            <th>Loan amount</th>
-            <th>Status</th>
-            <th>Risk category</th>
-            <th className="text-right">Action</th>
+            <th>{t("table.appId")}</th>
+            {showApplicant && <th>{t("table.applicant")}</th>}
+            <th>{t("table.applied")}</th>
+            <th>{t("table.loanAmount")}</th>
+            <th>{t("table.status")}</th>
+            <th>{t("table.risk")}</th>
+            <th className="text-right">{t("table.action")}</th>
           </tr>
         </thead>
         <tbody>
@@ -85,7 +87,7 @@ export function ApplicationTable({
                     <RiskBadge category={assessment.risk_category} />
                   ) : (
                     <span className="text-[11.5px] text-muted/70">
-                      Not assessed
+                      {t("table.notAssessed")}
                     </span>
                   )}
                 </td>
@@ -94,7 +96,7 @@ export function ApplicationTable({
                     href={`/applications/${application.id}`}
                     className="inline-flex items-center gap-1 text-[11.5px] font-medium text-sage transition-colors hover:text-sage-bright"
                   >
-                    View
+                    {t("table.view")}
                     <ChevronRightIcon className="h-3.5 w-3.5" />
                   </Link>
                 </td>

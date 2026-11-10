@@ -6,6 +6,7 @@ import { Logo } from "@/components/logo";
 import { LogoutIcon, SparkIcon } from "@/components/icons";
 import { NAV_ITEMS } from "@/lib/nav";
 import { cn } from "@/lib/cn";
+import { useI18n } from "@/lib/i18n";
 import { useCredora } from "@/lib/store";
 
 function isActive(pathname: string, href: string): boolean {
@@ -17,6 +18,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   const router = useRouter();
   const { session, logout } = useCredora();
+  const { t } = useI18n();
 
   const handleLogout = async () => {
     await logout();
@@ -34,19 +36,19 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
 
       <div className="mx-4 rounded-lg border border-white/[0.06] bg-black/15 px-3 py-2.5">
         <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-sage/70">
-          Workspace
+          {t("sidebar.workspace")}
         </p>
         <p className="mt-1 truncate text-[12.5px] font-medium text-white">
           {session?.organization_name ?? "Nusantara PayLater"}
         </p>
         <p className="mt-0.5 text-[10.5px] text-muted">
-          PayLater risk operations
+          {t("sidebar.orgSubtitle")}
         </p>
       </div>
 
       <nav className="mt-5 flex-1 overflow-y-auto px-3">
         <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted/70">
-          Navigation
+          {t("sidebar.navigation")}
         </p>
         <ul className="space-y-1">
           {NAV_ITEMS.map((item) => {
@@ -70,7 +72,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                       active ? "text-sage" : "text-muted group-hover:text-white",
                     )}
                   />
-                  <span className="truncate">{item.label}</span>
+                  <span className="truncate">{t(item.labelKey)}</span>
                   {active && (
                     <span className="ml-auto h-1.5 w-1.5 rounded-full bg-sage" />
                   )}
@@ -85,10 +87,10 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         <div className="rounded-lg border border-line/70 bg-black/20 p-3">
           <div className="flex items-center gap-2">
             <SparkIcon className="h-3.5 w-3.5 text-sage" />
-            <p className="text-[11px] font-medium text-white">Risk engine</p>
+            <p className="text-[11px] font-medium text-white">{t("sidebar.riskEngine")}</p>
             <span className="ml-auto flex items-center gap-1.5 text-[10px] text-muted">
               <span className="h-1.5 w-1.5 rounded-full bg-risk-low" />
-              Online
+              {t("sidebar.online")}
             </span>
           </div>
           <p className="mt-1.5 text-[10.5px] leading-relaxed text-muted">
@@ -104,10 +106,10 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
           className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-[12.5px] font-medium text-muted transition-colors hover:bg-risk-high/10 hover:text-[#f3938f]"
         >
           <LogoutIcon className="h-[17px] w-[17px]" />
-          Logout
+          {t("sidebar.logout")}
         </button>
         <p className="mt-2 px-3 text-[9.5px] leading-relaxed text-muted/55">
-          Smarter Credit. Better Decisions.
+          {t("common.tagline")}
         </p>
       </div>
     </div>

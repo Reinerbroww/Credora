@@ -27,22 +27,20 @@ import {
   formatDateTime,
   formatPercent,
 } from "@/lib/format";
+import { useI18n } from "@/lib/i18n";
 import { useCredora } from "@/lib/store";
 import type { RiskCategory } from "@/lib/types";
 
-const RISK_SUMMARY: Record<RiskCategory, string> = {
-  "Low Risk":
-    "The estimated default probability is below the low-risk threshold. Routine handling is appropriate, while the officer still records the final decision.",
-  "Medium Risk":
-    "The estimate sits in the medium-risk band. Consider repayment capacity, employment stability, and supporting documents before deciding.",
-  "High Risk":
-    "The estimate is above the high-risk threshold. A detailed manual review and additional verification are recommended before approval.",
+const RISK_SUMMARY_KEYS: Record<RiskCategory, string> = {
+  "Low Risk": "assess.summaryLow",
+  "Medium Risk": "assess.summaryMedium",
+  "High Risk": "assess.summaryHigh",
 };
 
 const RISK_THRESHOLDS = [
-  { label: "Low", value: "< 18%", color: "bg-risk-low" },
-  { label: "Medium", value: "18–42%", color: "bg-risk-mid" },
-  { label: "High", value: "≥ 42%", color: "bg-risk-high" },
+  { labelKey: "assess.thresholdLow", value: "< 18%", color: "bg-risk-low" },
+  { labelKey: "assess.thresholdMedium", value: "18–42%", color: "bg-risk-mid" },
+  { labelKey: "assess.thresholdHigh", value: "≥ 42%", color: "bg-risk-high" },
 ];
 
 export default function AssessmentResultPage() {
@@ -53,6 +51,7 @@ export default function AssessmentResultPage() {
     runAssessment,
     assessments,
   } = useCredora();
+  const { t, risk, role } = useI18n();
   const [running, setRunning] = useState(false);
 
   const application = applicationById(params.id);
@@ -63,11 +62,11 @@ export default function AssessmentResultPage() {
       <Card>
         <EmptyState
           icon={<FolderIcon className="h-5 w-5" />}
-          title="Application not found"
-          description="The requested application is not available in this workspace."
+          title={t("assess.notFoundTitle")}
+          description={t("assess.notFoundDesc")}
           action={
             <Link href="/applications" className="btn-primary">
-              Back to Applications
+              {t("detail.backToApps")}
             </Link>
           }
         />
@@ -80,14 +79,16 @@ export default function AssessmentResultPage() {
       <div className="fade-in space-y-5">
         <PageHeader
           eyebrow={displayId(application.id)}
-          title="Credit Risk Assessment"
-          description={`No assessment has been recorded for ${application.applicant_name} yet.`}
+          title={t("assess.title")}
+          description={t("assess.noAssessmentFor", {
+            name: application.applicant_name,
+          })}
         />
         <Card>
           <EmptyState
             icon={<SparkIcon className="h-5 w-5" />}
-            title="No assessment available"
-            description="Run the risk assessment to generate a default probability, risk category, and contributing factors."
+            title={t("assess.noAvailableTitle")}
+            description={t("assess.noAvailableDesc")}
             action={
               <button
                 type="button"
@@ -97,7 +98,7 @@ export default function AssessmentResultPage() {
                 className="btn-primary"
               >
                 <SparkIcon className="h-4 w-4" />
-                Run Risk Assessment
+                {t("assess.run")}
               </button>
             }
           />
@@ -126,14 +127,16 @@ export default function AssessmentResultPage() {
           <span className="rotate-180">
             <ArrowRightIcon className="h-3.5 w-3.5" />
           </span>
-          Back to Application Detail
+          {t("assess.backToDetail")}
         </Link>
         <PageHeader
-          eyebrow={`${displayId(application.id)} · Assessment result`}
-          title="Credit Risk Assessment"
-          description={`${application.applicant_name} · Assessed ${formatDateTime(
-            assessment.assessed_at,
-          )} · ${historyCount} assessment${historyCount === 1 ? "" : "s"} on record`}
+          eyebrow={`${displayId(application.id)} · ${t("assess.eyebrowResult")}`}
+          title={t("assess.title")}
+          description={t("assess.description", {
+            name: application.applicant_name,
+            date: formatDateTime(assessment.assessed_at),
+            count: historyCount,
+          })}
           actions={
             <>
               <button
@@ -143,14 +146,14 @@ export default function AssessmentResultPage() {
                 className="btn-secondary"
               >
                 <RefreshIcon className="h-4 w-4" />
-                {running ? "Assessing..." : "Re-run"}
+                {running ? t("assess.assessing") : t("assess.rerun")}
               </button>
               <Link
                 href={`/underwriting/${application.id}`}
                 className="btn-primary"
               >
                 <ClipboardCheckIcon className="h-4 w-4" />
-                Continue to Review
+                {t("assess.continueReview")}
               </Link>
             </>
           }
@@ -171,20 +174,23 @@ export default function AssessmentResultPage() {
               </span>
             </div>
             <h2 className="mt-3 text-[20px] font-semibold tracking-tight text-white">
-              {assessment.risk_category}
+              {risk(assessment.risk_category)}
             </h2>
             <p className="mt-1.5 max-w-2xl text-[12.5px] leading-relaxed text-muted">
-              {RISK_SUMMARY[assessment.risk_category]}
+              {t(RISK_SUMMARY_KEYS[assessment.risk_category])}
             </p>
 
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
               <Metric
-                label="Default probability"
+                label={t("assess.defaultProb")}
                 value={formatPercent(assessment.default_probability, 2)}
               />
-              <Metric label="Risk category" value={assessment.risk_category} />
               <Metric
-                label="Assessed at"
+                label={t("assess.riskCategory")}
+                value={risk(assessment.risk_category)}
+              />
+              <Metric
+                label={t("assess.assessedAt")}
                 value={formatDateTime(assessment.assessed_at)}
               />
             </div>
@@ -194,11 +200,13 @@ export default function AssessmentResultPage() {
         <div className="grid gap-0 border-t border-line-soft sm:grid-cols-3">
           {RISK_THRESHOLDS.map((threshold) => (
             <div
-              key={threshold.label}
+              key={threshold.labelKey}
               className="flex items-center gap-2.5 border-b border-line-soft px-5 py-3 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0"
             >
               <span className={`h-2 w-2 rounded-full ${threshold.color}`} />
-              <span className="text-[11.5px] text-muted">{threshold.label}</span>
+              <span className="text-[11.5px] text-muted">
+                {t(threshold.labelKey)}
+              </span>
               <span className="ml-auto text-[11.5px] font-medium text-white">
                 {threshold.value}
               </span>
@@ -210,12 +218,12 @@ export default function AssessmentResultPage() {
       <div className="grid gap-4 lg:grid-cols-[1.4fr_0.9fr]">
         <div className="space-y-4">
           <SectionCard
-            title="Contributing factors"
-            subtitle="Model signals that move the estimate up or down"
+            title={t("assess.contributing")}
+            subtitle={t("assess.contributingSub")}
           >
             {assessment.contributing_factors.length === 0 ? (
               <p className="text-[12.5px] text-muted">
-                No dominant factors were identified for this application.
+                {t("assess.noFactors")}
               </p>
             ) : (
               <FactorBars factors={assessment.contributing_factors} />
@@ -223,24 +231,28 @@ export default function AssessmentResultPage() {
           </SectionCard>
 
           <SectionCard
-            title="Model information"
-            subtitle="Metadata recorded with this assessment"
+            title={t("assess.modelInfo")}
+            subtitle={t("assess.modelInfoSub")}
           >
             <div className="grid gap-x-8 sm:grid-cols-2">
-              <InfoRow label="Model" value={assessment.model_name} />
-              <InfoRow label="Version" value={assessment.model_version} />
+              <InfoRow label={t("assess.model")} value={assessment.model_name} />
               <InfoRow
-                label="Output"
-                value="Default probability (0–1)"
+                label={t("assess.version")}
+                value={assessment.model_version}
               />
-              <InfoRow label="Assessed by" value="Rani Prameswari · Risk Analyst" />
+              <InfoRow
+                label={t("assess.output")}
+                value={t("assess.outputValue")}
+              />
+              <InfoRow
+                label={t("assess.assessedBy")}
+                value={`Rani Prameswari · ${role("Risk Analyst")}`}
+              />
             </div>
             <div className="mt-4 flex items-start gap-2.5 rounded-lg border border-risk-mid/20 bg-risk-mid/[0.06] px-3.5 py-2.5">
               <AlertIcon className="mt-0.5 h-4 w-4 shrink-0 text-risk-mid" />
               <p className="text-[11px] leading-relaxed text-muted">
-                This workspace uses a deterministic demo scoring engine that
-                stands in for the LightGBM service. Before production, outputs
-                must come from the validated model artifact and be monitored.
+                {t("assess.caveat")}
               </p>
             </div>
           </SectionCard>
@@ -249,25 +261,32 @@ export default function AssessmentResultPage() {
         <div className="space-y-4 lg:sticky lg:top-[88px] lg:self-start">
           <Card className="p-5">
             <h2 className="text-[13px] font-semibold text-white">
-              Application summary
+              {t("assess.appSummary")}
             </h2>
             <div className="mt-3">
-              <InfoRow label="Applicant" value={application.applicant_name} />
-              <InfoRow label="Application ID" value={displayId(application.id)} mono />
               <InfoRow
-                label="Loan amount"
+                label={t("assess.applicant")}
+                value={application.applicant_name}
+              />
+              <InfoRow
+                label={t("assess.appId")}
+                value={displayId(application.id)}
+                mono
+              />
+              <InfoRow
+                label={t("assess.loanAmount")}
                 value={formatCurrency(application.loan_amnt)}
               />
               <InfoRow
-                label="Annual income"
+                label={t("assess.annualIncome")}
                 value={formatCurrency(application.person_income)}
               />
               <InfoRow
-                label="Loan-to-income"
+                label={t("assess.loanToIncome")}
                 value={formatPercent(application.loan_percent_income)}
               />
               <InfoRow
-                label="Interest rate"
+                label={t("assess.interestRate")}
                 value={`${application.loan_int_rate.toFixed(2)}%`}
               />
             </div>
@@ -278,11 +297,10 @@ export default function AssessmentResultPage() {
               <ShieldIcon className="mt-0.5 h-4 w-4 shrink-0 text-sage" />
               <div>
                 <p className="text-[12px] font-medium text-white">
-                  Officer decides, not the model
+                  {t("assess.officerTitle")}
                 </p>
                 <p className="mt-1 text-[11px] leading-relaxed text-muted">
-                  Continue to the underwriting review to add notes, select the
-                  final decision, and record the reason.
+                  {t("assess.officerDesc")}
                 </p>
               </div>
             </div>
@@ -291,13 +309,13 @@ export default function AssessmentResultPage() {
               className="btn-primary mt-4 w-full"
             >
               <ClipboardCheckIcon className="h-4 w-4" />
-              Continue to Review
+              {t("assess.continueReview")}
             </Link>
             <Link
               href={`/applications/${application.id}`}
               className="btn-secondary mt-2 w-full"
             >
-              Back to application
+              {t("assess.backToApp")}
             </Link>
           </Card>
         </div>

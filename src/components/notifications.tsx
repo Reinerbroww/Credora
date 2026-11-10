@@ -11,6 +11,7 @@ import {
 } from "@/components/icons";
 import { latestAssessments, latestReviews } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
+import { useI18n } from "@/lib/i18n";
 import { useCredora } from "@/lib/store";
 
 const TONE_CLASSES: Record<string, string> = {
@@ -21,6 +22,7 @@ const TONE_CLASSES: Record<string, string> = {
 
 export function NotificationsMenu() {
   const { applications, assessments, reviews } = useCredora();
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -78,8 +80,8 @@ export function NotificationsMenu() {
   if (unassessed > 0) {
     notices.push({
       id: "assessments",
-      title: "Assessments pending",
-      description: `${unassessed} application${unassessed === 1 ? "" : "s"} awaiting a first risk assessment.`,
+      title: t("notif.assessmentsPending"),
+      description: t("notif.assessmentsPendingDesc", { count: unassessed }),
       href: "/applications",
       tone: "warning",
       icon: AlertIcon,
@@ -89,8 +91,8 @@ export function NotificationsMenu() {
   if (awaitingReview > 0) {
     notices.push({
       id: "reviews",
-      title: "Underwriting queue",
-      description: `${awaitingReview} assessed application${awaitingReview === 1 ? "" : "s"} need a recorded decision.`,
+      title: t("notif.queueTitle"),
+      description: t("notif.queueDesc", { count: awaitingReview }),
       href: "/underwriting",
       tone: "sage",
       icon: ClipboardCheckIcon,
@@ -100,8 +102,8 @@ export function NotificationsMenu() {
   if (completed > 0) {
     notices.push({
       id: "completed",
-      title: "Reviews recorded",
-      description: `${completed} application${completed === 1 ? "" : "s"} have a final decision on file.`,
+      title: t("notif.reviewsRecorded"),
+      description: t("notif.reviewsRecordedDesc", { count: completed }),
       href: "/underwriting",
       tone: "low",
       icon: CheckIcon,
@@ -115,8 +117,8 @@ export function NotificationsMenu() {
         onClick={() => setOpen((current) => !current)}
         aria-label={
           pending > 0
-            ? `Notifications, ${pending} item${pending === 1 ? "" : "s"} pending`
-            : "Notifications"
+            ? t("notif.ariaPending", { count: pending })
+            : t("notif.aria")
         }
         aria-haspopup="true"
         aria-expanded={open}
@@ -144,14 +146,16 @@ export function NotificationsMenu() {
           <div className="flex items-center justify-between border-b border-line-soft px-4 py-3">
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted/70">
-                Notifications
+                {t("notif.title")}
               </p>
               <p className="mt-0.5 text-[11.5px] font-medium text-white">
-                Workspace activity
+                {t("notif.workspaceActivity")}
               </p>
             </div>
             <span className="rounded-full border border-line bg-white/[0.02] px-2 py-0.5 text-[10px] text-muted">
-              {pending > 0 ? `${pending} pending` : "All clear"}
+              {pending > 0
+                ? t("notif.pendingCount", { count: pending })
+                : t("notif.allClear")}
             </span>
           </div>
 
@@ -162,10 +166,10 @@ export function NotificationsMenu() {
                   <CheckIcon className="h-5 w-5" />
                 </span>
                 <p className="mt-3 text-[12px] font-medium text-white">
-                  You&apos;re all caught up
+                  {t("notif.allCaught")}
                 </p>
                 <p className="mt-1 text-[10.5px] text-muted">
-                  No pending assessments or reviews.
+                  {t("notif.noPending")}
                 </p>
               </div>
             ) : (
@@ -206,7 +210,7 @@ export function NotificationsMenu() {
             onClick={() => setOpen(false)}
             className="flex items-center justify-between border-t border-line-soft px-4 py-2.5 text-[11px] font-medium text-muted transition-colors hover:bg-white/[0.03] hover:text-white"
           >
-            Open dashboard
+            {t("notif.openDashboard")}
             <ChevronRightIcon className="h-3.5 w-3.5" />
           </Link>
         </div>

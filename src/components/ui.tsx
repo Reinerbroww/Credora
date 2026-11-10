@@ -1,5 +1,8 @@
+"use client";
+
 import type { ReactNode } from "react";
 import { cn } from "@/lib/cn";
+import { useI18n } from "@/lib/i18n";
 import type {
   ApplicationStatus,
   FinalDecision,
@@ -102,6 +105,7 @@ export function RiskBadge({
   category: RiskCategory;
   className?: string;
 }) {
+  const { risk } = useI18n();
   return (
     <span
       className={cn(
@@ -111,7 +115,7 @@ export function RiskBadge({
       )}
     >
       <span className={cn("h-1.5 w-1.5 rounded-full", riskDots[category])} />
-      {category}
+      {risk(category)}
     </span>
   );
 }
@@ -125,6 +129,7 @@ const statusStyles: Record<ApplicationStatus, string> = {
 };
 
 export function StatusBadge({ status }: { status: ApplicationStatus }) {
+  const { status: translate } = useI18n();
   return (
     <span
       className={cn(
@@ -132,7 +137,7 @@ export function StatusBadge({ status }: { status: ApplicationStatus }) {
         statusStyles[status],
       )}
     >
-      {status}
+      {translate(status)}
     </span>
   );
 }
@@ -144,6 +149,7 @@ const reviewStyles: Record<ReviewStatus, string> = {
 };
 
 export function ReviewStatusBadge({ status }: { status: ReviewStatus }) {
+  const { reviewStatus } = useI18n();
   return (
     <span
       className={cn(
@@ -151,7 +157,7 @@ export function ReviewStatusBadge({ status }: { status: ReviewStatus }) {
         reviewStyles[status],
       )}
     >
-      {status}
+      {reviewStatus(status)}
     </span>
   );
 }
@@ -163,6 +169,7 @@ const decisionStyles: Record<FinalDecision, string> = {
 };
 
 export function DecisionBadge({ decision }: { decision: FinalDecision }) {
+  const { decision: translate } = useI18n();
   return (
     <span
       className={cn(
@@ -170,7 +177,7 @@ export function DecisionBadge({ decision }: { decision: FinalDecision }) {
         decisionStyles[decision],
       )}
     >
-      {decision}
+      {translate(decision)}
     </span>
   );
 }
@@ -295,6 +302,7 @@ export function InfoRow({
 }
 
 export function DemoBanner({ className }: { className?: string }) {
+  const { t } = useI18n();
   return (
     <div
       className={cn(
@@ -304,9 +312,8 @@ export function DemoBanner({ className }: { className?: string }) {
     >
       <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sage" />
       <p className="text-[11.5px] leading-relaxed text-muted">
-        <span className="font-medium text-sage">Demo workspace.</span> Records are
-        illustrative, and predictions are decision support only — final credit
-        decisions remain with authorized officers.
+        <span className="font-medium text-sage">{t("demo.workspace")}</span>{" "}
+        {t("demo.desc")}
       </p>
     </div>
   );

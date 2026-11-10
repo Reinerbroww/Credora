@@ -22,6 +22,7 @@ import type {
   ReviewStatus,
   RiskAssessment,
   RiskCategory,
+  Role,
   UnderwritingReview,
 } from "./types";
 
@@ -484,6 +485,48 @@ export async function resetOrganizationData(
   }
 
   return listData(organizationId);
+}
+
+export interface RegisterAccountInput {
+  full_name: string;
+  organization_name: string;
+  email: string;
+  password: string;
+  role: Role;
+}
+
+export async function registerAccount(
+  input: RegisterAccountInput,
+): Promise<{ id: string }> {
+  const sql = getSql();
+  const passwordHash = await bcrypt.hash(input.password, 10);
+  const organizationId = crypto.randomUUID();
+  const userId = crypto.randomUUID();
+  const email = input.email.trim().toLowerCase();
+
+  const existing = await sql`
+    SELECT 1 FROM users WHERE lower(email) = ${email} LIMIT 1
+  `;
+  if (existing.length > 0) {
+    throw new Error("EMAIL_EXISTS");
+  }
+
+  await sql.transaction([
+    sql`
+      INSERT INTO organizations (id, name)
+      VALUES (${organizationId}, ${input.organization_name})
+    `,
+    sql`
+      INSERT INTO users (id, name, email, password_hash)
+      VALUES (${userId}, ${input.full_name}, ${email}, ${passwordHash})
+    `,
+    sql`
+      INSERT INTO profiles (id, organization_id, full_name, role)
+      VALUES (${userId}, ${organizationId}, ${input.full_name}, ${input.role})
+    `,
+  ]);
+
+  return { id: userId };
 }
 
 export async function seedDemoOrganization(): Promise<void> {

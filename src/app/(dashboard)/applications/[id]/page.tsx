@@ -32,29 +32,15 @@ import {
   formatDateTime,
   formatPercent,
 } from "@/lib/format";
+import { useI18n } from "@/lib/i18n";
 import { useCredora } from "@/lib/store";
-
-const HOME_LABELS: Record<string, string> = {
-  RENT: "Rent",
-  OWN: "Own",
-  MORTGAGE: "Mortgage",
-  OTHER: "Other",
-};
-
-const INTENT_LABELS: Record<string, string> = {
-  PERSONAL: "Personal",
-  EDUCATION: "Education",
-  MEDICAL: "Medical",
-  VENTURE: "Business venture",
-  HOMEIMPROVEMENT: "Home improvement",
-  DEBTCONSOLIDATION: "Debt consolidation",
-};
 
 export default function ApplicationDetailPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const { applicationById, assessments, latestAssessment, runAssessment } =
     useCredora();
+  const { t, home, intent } = useI18n();
   const [running, setRunning] = useState(false);
 
   const application = applicationById(params.id);
@@ -64,11 +50,11 @@ export default function ApplicationDetailPage() {
       <Card>
         <EmptyState
           icon={<FolderIcon className="h-5 w-5" />}
-          title="Application not found"
-          description="The requested application is not available in this workspace. It may have been removed or the link is incorrect."
+          title={t("detail.notFoundTitle")}
+          description={t("detail.notFoundDesc")}
           action={
             <Link href="/applications" className="btn-primary">
-              Back to Applications
+              {t("detail.backToApps")}
             </Link>
           }
         />
@@ -104,14 +90,16 @@ export default function ApplicationDetailPage() {
           <span className="rotate-180">
             <ArrowRightIcon className="h-3.5 w-3.5" />
           </span>
-          Back to Applications
+          {t("detail.backToApps")}
         </Link>
         <PageHeader
           eyebrow={displayId(application.id)}
           title={application.applicant_name}
-          description={`${application.applicant_email} · Applied ${formatDate(
-            application.created_at,
-          )} · Last updated ${formatDate(application.updated_at)}`}
+          description={`${application.applicant_email} · ${t("detail.applied", {
+            date: formatDate(application.created_at),
+          })} · ${t("detail.lastUpdated", {
+            date: formatDate(application.updated_at),
+          })}`}
           actions={
             <>
               {latest && (
@@ -120,7 +108,7 @@ export default function ApplicationDetailPage() {
                   className="btn-secondary"
                 >
                   <ClipboardCheckIcon className="h-4 w-4" />
-                  Open review
+                  {t("detail.openReview")}
                 </Link>
               )}
               <button
@@ -135,10 +123,10 @@ export default function ApplicationDetailPage() {
                   <SparkIcon className="h-4 w-4" />
                 )}
                 {running
-                  ? "Assessing..."
+                  ? t("detail.assessing")
                   : latest
-                    ? "Re-run Assessment"
-                    : "Run Risk Assessment"}
+                    ? t("detail.rerun")
+                    : t("detail.run")}
               </button>
             </>
           }
@@ -148,86 +136,105 @@ export default function ApplicationDetailPage() {
       <div className="grid gap-4 lg:grid-cols-[1.45fr_0.9fr]">
         <div className="space-y-4">
           <SectionCard
-            title="Customer information"
-            subtitle="Identity and household details"
+            title={t("detail.customerInfo")}
+            subtitle={t("detail.customerInfoSub")}
             action={<UserIcon className="h-4 w-4 text-muted" />}
           >
             <div className="grid gap-x-8 sm:grid-cols-2">
-              <InfoRow label="Full name" value={application.applicant_name} />
-              <InfoRow label="Email address" value={application.applicant_email} />
-              <InfoRow label="Age" value={`${application.age} years`} />
               <InfoRow
-                label="Home ownership"
-                value={HOME_LABELS[application.home_ownership] ?? application.home_ownership}
+                label={t("detail.fullName")}
+                value={application.applicant_name}
+              />
+              <InfoRow
+                label={t("detail.email")}
+                value={application.applicant_email}
+              />
+              <InfoRow
+                label={t("detail.age")}
+                value={t("common.years", { value: application.age })}
+              />
+              <InfoRow
+                label={t("detail.homeOwnership")}
+                value={home(application.home_ownership)}
               />
             </div>
           </SectionCard>
 
           <SectionCard
-            title="Financial information"
-            subtitle="Loan request and repayment indicators"
+            title={t("detail.financialInfo")}
+            subtitle={t("detail.financialInfoSub")}
             action={<WalletIcon className="h-4 w-4 text-muted" />}
           >
             <div className="grid gap-x-8 sm:grid-cols-2">
               <InfoRow
-                label="Annual income"
+                label={t("detail.annualIncome")}
                 value={formatCurrency(application.person_income)}
               />
               <InfoRow
-                label="Requested loan amount"
+                label={t("detail.loanAmount")}
                 value={formatCurrency(application.loan_amnt)}
               />
               <InfoRow
-                label="Interest rate"
+                label={t("detail.interestRate")}
                 value={`${application.loan_int_rate.toFixed(2)}%`}
               />
               <InfoRow
-                label="Loan-to-income"
+                label={t("detail.loanToIncome")}
                 value={formatPercent(application.loan_percent_income)}
               />
               <InfoRow
-                label="Loan purpose"
-                value={INTENT_LABELS[application.loan_intent] ?? application.loan_intent}
+                label={t("detail.loanPurpose")}
+                value={intent(application.loan_intent)}
               />
-              <InfoRow label="Loan grade" value={application.loan_grade} />
               <InfoRow
-                label="Credit history length"
-                value={`${application.cb_person_cred_hist_length} years`}
+                label={t("detail.loanGrade")}
+                value={application.loan_grade}
+              />
+              <InfoRow
+                label={t("detail.creditHistory")}
+                value={t("common.years", {
+                  value: application.cb_person_cred_hist_length,
+                })}
               />
             </div>
           </SectionCard>
 
           <SectionCard
-            title="Employment information"
-            subtitle="Stability indicators used by the risk engine"
+            title={t("detail.employmentInfo")}
+            subtitle={t("detail.employmentInfoSub")}
             action={<BuildingIcon className="h-4 w-4 text-muted" />}
           >
             <div className="grid gap-x-8 sm:grid-cols-2">
               <InfoRow
-                label="Employment length"
-                value={`${application.employment_length.toFixed(1)} years`}
+                label={t("detail.employmentLength")}
+                value={t("common.years", {
+                  value: application.employment_length.toFixed(1),
+                })}
               />
               <InfoRow
-                label="Historical default"
+                label={t("detail.historicalDefault")}
                 value={
                   application.cb_person_default_on_file === "Y"
-                    ? "Yes — default on file"
-                    : "No record"
+                    ? t("detail.defaultYes")
+                    : t("detail.defaultNo")
                 }
               />
-              <InfoRow label="Organization" value="Nusantara PayLater" />
+              <InfoRow
+                label={t("detail.organization")}
+                value="Nusantara PayLater"
+              />
             </div>
           </SectionCard>
 
           <SectionCard
-            title="Assessment history"
-            subtitle={`${history.length} assessment${history.length === 1 ? "" : "s"} recorded`}
+            title={t("detail.assessmentHistory")}
+            subtitle={t("detail.recordsCount", { count: history.length })}
             bodyClassName="p-0"
           >
             {history.length === 0 ? (
               <div className="px-5 py-8 text-center">
                 <p className="text-[12.5px] text-muted">
-                  No risk assessment has been recorded for this application yet.
+                  {t("detail.noAssessment")}
                 </p>
                 <button
                   type="button"
@@ -236,7 +243,7 @@ export default function ApplicationDetailPage() {
                   className="btn-primary mt-4"
                 >
                   <SparkIcon className="h-4 w-4" />
-                  Run Risk Assessment
+                  {t("detail.run")}
                 </button>
               </div>
             ) : (
@@ -258,13 +265,13 @@ export default function ApplicationDetailPage() {
                           <RiskBadge category={assessment.risk_category} />
                           {index === 0 && (
                             <span className="rounded-full border border-sage/20 bg-sage/[0.08] px-2 py-0.5 text-[9.5px] font-medium uppercase tracking-wider text-sage">
-                              Latest
+                              {t("detail.latest")}
                             </span>
                           )}
                         </div>
                         <p className="mt-1 text-[11px] text-muted">
-                          {assessment.model_name} · {assessment.model_version} ·
-                          Default probability{" "}
+                          {assessment.model_name} · {assessment.model_version} ·{" "}
+                          {t("detail.defaultProb")}{" "}
                           {formatPercent(assessment.default_probability, 2)}
                         </p>
                       </div>
@@ -274,7 +281,7 @@ export default function ApplicationDetailPage() {
                         href={`/applications/${application.id}/assessment`}
                         className="btn-ghost self-start sm:self-auto"
                       >
-                        View result
+                        {t("detail.viewResult")}
                         <ArrowRightIcon className="h-3.5 w-3.5" />
                       </Link>
                     )}
@@ -289,15 +296,25 @@ export default function ApplicationDetailPage() {
           <Card className="p-5">
             <div className="flex items-center justify-between">
               <h2 className="text-[13px] font-semibold text-white">
-                Application status
+                {t("detail.appStatus")}
               </h2>
               <StatusBadge status={application.status} />
             </div>
             <div className="mt-4">
-              <InfoRow label="Application ID" value={displayId(application.id)} mono />
-              <InfoRow label="Applied on" value={formatDate(application.created_at)} />
-              <InfoRow label="Created by" value="Rani Prameswari" />
-              <InfoRow label="Last updated" value={formatDate(application.updated_at)} />
+              <InfoRow
+                label={t("detail.appId")}
+                value={displayId(application.id)}
+                mono
+              />
+              <InfoRow
+                label={t("detail.appliedOn")}
+                value={formatDate(application.created_at)}
+              />
+              <InfoRow label={t("detail.createdBy")} value="Rani Prameswari" />
+              <InfoRow
+                label={t("detail.lastUpdatedLabel")}
+                value={formatDate(application.updated_at)}
+              />
             </div>
           </Card>
 
@@ -305,15 +322,14 @@ export default function ApplicationDetailPage() {
             <Card className="p-5">
               <div className="flex items-center justify-between">
                 <h2 className="text-[13px] font-semibold text-white">
-                  Latest assessment
+                  {t("detail.latestAssessment")}
                 </h2>
                 <RiskBadge category={latest.risk_category} />
               </div>
               <div className="mt-4 flex flex-col items-center">
                 <ProbabilityGauge value={latest.default_probability} />
                 <p className="mt-3 text-center text-[11px] leading-relaxed text-muted">
-                  Estimated default probability for the requested PayLater
-                  exposure. Use with review notes, not as an automatic decision.
+                  {t("detail.gaugeCaption")}
                 </p>
               </div>
               <div className="mt-4 grid gap-2">
@@ -321,7 +337,7 @@ export default function ApplicationDetailPage() {
                   href={`/applications/${application.id}/assessment`}
                   className="btn-primary w-full"
                 >
-                  View full result
+                  {t("detail.viewFull")}
                   <ArrowRightIcon className="h-4 w-4" />
                 </Link>
                 <Link
@@ -329,7 +345,7 @@ export default function ApplicationDetailPage() {
                   className="btn-secondary w-full"
                 >
                   <ClipboardCheckIcon className="h-4 w-4" />
-                  Underwriting review
+                  {t("detail.underwritingReview")}
                 </Link>
               </div>
             </Card>
@@ -339,11 +355,10 @@ export default function ApplicationDetailPage() {
                 <ClockIcon className="mt-0.5 h-4 w-4 shrink-0 text-risk-mid" />
                 <div>
                   <p className="text-[12px] font-medium text-white">
-                    Awaiting assessment
+                    {t("detail.awaitingTitle")}
                   </p>
                   <p className="mt-1 text-[11px] leading-relaxed text-muted">
-                    Run the risk assessment to generate a default probability,
-                    risk category, and contributing factors for this application.
+                    {t("detail.awaitingDesc")}
                   </p>
                 </div>
               </div>
@@ -351,10 +366,11 @@ export default function ApplicationDetailPage() {
           )}
 
           <Card className="p-5">
-            <p className="text-[11px] font-medium text-white">Decision support</p>
+            <p className="text-[11px] font-medium text-white">
+              {t("detail.decisionSupport")}
+            </p>
             <p className="mt-1.5 text-[11px] leading-relaxed text-muted">
-              Model output is an estimate. Final approval or rejection must be
-              recorded by an authorized Credit Officer after manual review.
+              {t("detail.decisionSupportDesc")}
             </p>
           </Card>
         </div>

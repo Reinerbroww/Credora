@@ -1,3 +1,17 @@
+let activeLocale: "en" | "id" = "en";
+
+export function setFormatLocale(locale: "en" | "id"): void {
+  activeLocale = locale;
+}
+
+export function getFormatLocale(): "en" | "id" {
+  return activeLocale;
+}
+
+function dateLocale(): string {
+  return activeLocale === "id" ? "id-ID" : "en-GB";
+}
+
 const currencyFormatter = new Intl.NumberFormat("id-ID", {
   style: "currency",
   currency: "IDR",
@@ -30,7 +44,7 @@ export function formatPercent(value: number, digits = 1): string {
 export function formatDate(iso: string | null | undefined): string {
   if (!iso) return "—";
   const date = new Date(iso);
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat(dateLocale(), {
     day: "2-digit",
     month: "short",
     year: "numeric",
@@ -40,7 +54,7 @@ export function formatDate(iso: string | null | undefined): string {
 export function formatDateTime(iso: string | null | undefined): string {
   if (!iso) return "—";
   const date = new Date(iso);
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat(dateLocale(), {
     day: "2-digit",
     month: "short",
     year: "numeric",

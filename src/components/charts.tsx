@@ -2,6 +2,7 @@
 
 import { useId } from "react";
 import { cn } from "@/lib/cn";
+import { useI18n } from "@/lib/i18n";
 
 export interface DonutDatum {
   label: string;
@@ -110,6 +111,7 @@ export interface TrendDatum {
 }
 
 export function TrendChart({ data }: { data: TrendDatum[] }) {
+  const { t } = useI18n();
   const gradientId = useId().replace(/:/g, "");
   const width = 640;
   const height = 230;
@@ -145,7 +147,7 @@ export function TrendChart({ data }: { data: TrendDatum[] }) {
         className="h-[220px] w-full"
         preserveAspectRatio="xMidYMid meet"
         role="img"
-        aria-label="Application trend chart"
+        aria-label={t("chart.trendAria")}
       >
         <defs>
           <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
@@ -248,6 +250,7 @@ export function HorizontalBarChart({ data }: { data: BarDatum[] }) {
 }
 
 export function ProbabilityGauge({ value }: { value: number }) {
+  const { t } = useI18n();
   const size = 176;
   const thickness = 12;
   const radius = (size - thickness) / 2;
@@ -288,7 +291,7 @@ export function ProbabilityGauge({ value }: { value: number }) {
             <span className="ml-0.5 text-[16px] text-muted">%</span>
           </p>
           <p className="mt-1.5 text-[10px] uppercase tracking-[0.16em] text-muted">
-            Default probability
+            {t("chart.defaultProbability")}
           </p>
         </div>
       </div>
@@ -300,20 +303,22 @@ export function FactorBars({
   factors,
 }: {
   factors: Array<{
+    key?: string;
     label: string;
     value: string;
     weight: number;
     direction: "increases" | "decreases";
   }>;
 }) {
+  const { t, factor: translateFactor, factorValue } = useI18n();
   return (
     <div className="space-y-4">
-      {factors.map((factor) => (
-        <div key={factor.label}>
+      {factors.map((factor, index) => (
+        <div key={factor.key ?? `${factor.label}-${index}`}>
           <div className="mb-1.5 flex items-center justify-between gap-3 text-[12px]">
             <span className="text-white">
-              {factor.label}
-              <span className="ml-2 text-muted">{factor.value}</span>
+              {translateFactor(factor.key ?? factor.label, factor.label)}
+              <span className="ml-2 text-muted">{factorValue(factor.value)}</span>
             </span>
             <span
               className={cn(
@@ -323,7 +328,9 @@ export function FactorBars({
                   : "text-[#8fd3ab]",
               )}
             >
-              {factor.direction === "increases" ? "Increases risk" : "Reduces risk"}
+              {factor.direction === "increases"
+                ? t("chart.increasesRisk")
+                : t("chart.reducesRisk")}
             </span>
           </div>
           <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.05]">
