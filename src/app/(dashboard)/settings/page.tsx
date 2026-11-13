@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import {
   AlertIcon,
-  BuildingIcon,
   CheckIcon,
   DatabaseIcon,
   LogoutIcon,
@@ -12,13 +11,7 @@ import {
   ShieldIcon,
   UserIcon,
 } from "@/components/icons";
-import {
-  Avatar,
-  Card,
-  InfoRow,
-  PageHeader,
-  SectionCard,
-} from "@/components/ui";
+import { Avatar, Card, PageHeader, SectionCard } from "@/components/ui";
 import { useI18n } from "@/lib/i18n";
 import { useCredora } from "@/lib/store";
 
@@ -122,22 +115,6 @@ export default function SettingsPage() {
                     className="field"
                   />
                 </div>
-                <div>
-                  <label className="label">{t("settings.role")}</label>
-                  <input
-                    value={role(session?.role ?? "Risk Analyst")}
-                    disabled
-                    className="field"
-                  />
-                </div>
-                <div>
-                  <label className="label">{t("settings.organization")}</label>
-                  <input
-                    value={session?.organization_name ?? "Nusantara PayLater"}
-                    disabled
-                    className="field"
-                  />
-                </div>
               </div>
 
               {profileSaved && (
@@ -147,42 +124,11 @@ export default function SettingsPage() {
                 </div>
               )}
 
-              <div className="flex flex-wrap items-center gap-2">
-                <button type="submit" className="btn-primary">
-                  <CheckIcon className="h-4 w-4" />
-                  {t("settings.saveChanges")}
-                </button>
-                <p className="text-[10.5px] text-muted/70">
-                  {t("settings.adminNote")}
-                </p>
-              </div>
+              <button type="submit" className="btn-primary">
+                <CheckIcon className="h-4 w-4" />
+                {t("settings.saveChanges")}
+              </button>
             </form>
-          </SectionCard>
-
-          <SectionCard
-            title={t("settings.orgInfo")}
-            subtitle={t("settings.orgInfoSub")}
-            action={<BuildingIcon className="h-4 w-4 text-muted" />}
-          >
-            <div>
-              <InfoRow
-                label={t("settings.organization")}
-                value={session?.organization_name ?? "Nusantara PayLater"}
-              />
-              <InfoRow
-                label={t("settings.orgId")}
-                value={session?.organization_id ?? "—"}
-                mono
-              />
-              <InfoRow
-                label={t("settings.dataIsolation")}
-                value={t("settings.dataIsolationValue")}
-              />
-              <InfoRow
-                label={t("settings.accessModel")}
-                value={t("settings.accessModelValue")}
-              />
-            </div>
           </SectionCard>
         </div>
 
@@ -194,18 +140,6 @@ export default function SettingsPage() {
           >
             <div className="space-y-3 text-[11.5px] leading-relaxed text-muted">
               <p>{t("settings.securityDesc")}</p>
-              <InfoRow
-                label={t("settings.authProvider")}
-                value={t("settings.authProviderValue")}
-              />
-              <InfoRow
-                label={t("settings.sessionStorage")}
-                value={t("settings.sessionStorageValue")}
-              />
-              <InfoRow
-                label={t("settings.dataLayer")}
-                value={t("settings.dataLayerValue")}
-              />
             </div>
           </SectionCard>
 

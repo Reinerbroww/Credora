@@ -18,6 +18,7 @@ import {
   DecisionBadge,
   EmptyState,
   InfoRow,
+  InfoTip,
   PageHeader,
   ReviewStatusBadge,
   RiskBadge,
@@ -58,6 +59,8 @@ export default function UnderwritingDetailPage() {
   const application = applicationById(params.id);
   const assessment = latestAssessment(params.id);
   const review = latestReview(params.id);
+  const canAssess = session?.role === "Risk Analyst";
+  const canDecide = session?.role === "Credit Officer";
 
   const [notes, setNotes] = useState(review?.review_notes ?? "");
   const [decision, setDecision] = useState<FinalDecision | "">(
@@ -150,18 +153,24 @@ export default function UnderwritingDetailPage() {
           <EmptyState
             icon={<SparkIcon className="h-5 w-5" />}
             title={t("uwDetail.assessmentRequired")}
-            description={t("uwDetail.assessmentRequiredDesc")}
+            description={
+              canAssess
+                ? t("uwDetail.assessmentRequiredDesc")
+                : t("perm.assess")
+            }
             action={
-              <button
-                type="button"
-                onClick={async () => {
-                  await runAssessment(application.id);
-                }}
-                className="btn-primary"
-              >
-                <SparkIcon className="h-4 w-4" />
-                {t("assess.run")}
-              </button>
+              canAssess ? (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    await runAssessment(application.id);
+                  }}
+                  className="btn-primary"
+                >
+                  <SparkIcon className="h-4 w-4" />
+                  {t("assess.run")}
+                </button>
+              ) : undefined
             }
           />
         </Card>
@@ -170,20 +179,19 @@ export default function UnderwritingDetailPage() {
           <div className="space-y-4">
             <SectionCard
               title={t("uwDetail.predictionResult")}
-              subtitle={`${assessment.model_name} · ${assessment.model_version} · ${formatDateTime(
-                assessment.assessed_at,
-              )}`}
+              subtitle={formatDateTime(assessment.assessed_at)}
             >
               <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-center">
                 <ProbabilityGauge value={assessment.default_probability} />
                 <div className="w-full">
                   <div className="flex flex-wrap items-center gap-2">
                     <RiskBadge category={assessment.risk_category} />
-                    <span className="text-[11px] text-muted">
+                    <span className="flex items-center gap-1.5 text-[11px] text-muted">
                       {t("uwDetail.defaultProb")}{" "}
                       <span className="font-medium text-white">
                         {formatPercent(assessment.default_probability, 2)}
                       </span>
+                      <InfoTip text={t("hint.defaultProbability")} />
                     </span>
                   </div>
                   <div className="mt-4">
@@ -212,30 +220,37 @@ export default function UnderwritingDetailPage() {
                 />
                 <InfoRow
                   label={t("uwDetail.homeOwnership")}
+                  hint={t("hint.homeOwnership")}
                   value={home(application.home_ownership)}
                 />
                 <InfoRow
                   label={t("uwDetail.annualIncome")}
+                  hint={t("hint.annualIncome")}
                   value={formatCurrency(application.person_income)}
                 />
                 <InfoRow
                   label={t("uwDetail.loanAmount")}
+                  hint={t("hint.loanAmount")}
                   value={formatCurrency(application.loan_amnt)}
                 />
                 <InfoRow
                   label={t("uwDetail.interestRate")}
+                  hint={t("hint.interestRate")}
                   value={`${application.loan_int_rate.toFixed(2)}%`}
                 />
                 <InfoRow
                   label={t("uwDetail.loanToIncome")}
+                  hint={t("hint.loanToIncome")}
                   value={formatPercent(application.loan_percent_income)}
                 />
                 <InfoRow
                   label={t("uwDetail.loanPurpose")}
+                  hint={t("hint.loanPurpose")}
                   value={intent(application.loan_intent)}
                 />
                 <InfoRow
                   label={t("uwDetail.employmentLength")}
+                  hint={t("hint.employmentLength")}
                   value={t("common.years", {
                     value: application.employment_length.toFixed(1),
                   })}
@@ -263,7 +278,8 @@ export default function UnderwritingDetailPage() {
                 )}
               </div>
 
-              <form onSubmit={handleSave} className="mt-4 space-y-4">
+              {canDecide ? (
+                <form onSubmit={handleSave} className="mt-4 space-y-4">
                 <div>
                   <label htmlFor="review_notes" className="label">
                     {t("uwDetail.reviewNotes")}
@@ -364,6 +380,11 @@ export default function UnderwritingDetailPage() {
                   </Link>
                 </div>
               </form>
+              ) : (
+                <div className="mt-4 rounded-lg border border-line bg-white/[0.02] px-3.5 py-3 text-[11.5px] leading-relaxed text-muted">
+                  {t("perm.decide")}
+                </div>
+              )}
             </Card>
           </div>
 

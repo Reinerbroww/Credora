@@ -7,11 +7,12 @@ import {
   AlertIcon,
   ArrowRightIcon,
   CheckIcon,
+  ShieldIcon,
   UserIcon,
   WalletIcon,
   BuildingIcon,
 } from "@/components/icons";
-import { Card, PageHeader } from "@/components/ui";
+import { Card, EmptyState, FieldLabel, PageHeader } from "@/components/ui";
 import { formatCurrency } from "@/lib/format";
 import { useI18n } from "@/lib/i18n";
 import { useCredora } from "@/lib/store";
@@ -96,7 +97,7 @@ function formatThousands(value: string): string {
 
 export default function AddApplicationPage() {
   const router = useRouter();
-  const { addApplication } = useCredora();
+  const { addApplication, session, ready } = useCredora();
   const { t, home, intent } = useI18n();
   const [form, setForm] = useState<FormState>(INITIAL_FORM);
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
@@ -200,6 +201,23 @@ export default function AddApplicationPage() {
     }
   };
 
+  if (ready && session?.role !== "Risk Analyst") {
+    return (
+      <Card>
+        <EmptyState
+          icon={<ShieldIcon className="h-5 w-5" />}
+          title={t("perm.restrictedTitle")}
+          description={t("perm.createApps")}
+          action={
+            <Link href="/applications" className="btn-primary">
+              {t("detail.backToApps")}
+            </Link>
+          }
+        />
+      </Card>
+    );
+  }
+
   return (
     <div className="fade-in space-y-5">
       <PageHeader
@@ -222,19 +240,19 @@ export default function AddApplicationPage() {
               </span>
               <div>
                 <h2 className="text-[13.5px] font-semibold text-white">
-                  {t("newapp.customer")}
+                  {t("newapp.customerInfo")}
                 </h2>
                 <p className="text-[11px] text-muted">
-                  {t("newapp.customerDesc")}
+                  {t("newapp.customerInfoDesc")}
                 </p>
               </div>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="sm:col-span-2">
-                <label htmlFor="applicant_name" className="label">
+                <FieldLabel htmlFor="applicant_name">
                   {t("newapp.fullName")}
-                </label>
+                </FieldLabel>
                 <input
                   id="applicant_name"
                   value={form.applicant_name}
@@ -250,9 +268,9 @@ export default function AddApplicationPage() {
               </div>
 
               <div className="sm:col-span-2">
-                <label htmlFor="applicant_email" className="label">
+                <FieldLabel htmlFor="applicant_email">
                   {t("newapp.email")}
-                </label>
+                </FieldLabel>
                 <input
                   id="applicant_email"
                   type="email"
@@ -269,9 +287,7 @@ export default function AddApplicationPage() {
               </div>
 
               <div>
-                <label htmlFor="age" className="label">
-                  {t("newapp.age")}
-                </label>
+                <FieldLabel htmlFor="age">{t("newapp.age")}</FieldLabel>
                 <input
                   id="age"
                   inputMode="numeric"
@@ -288,9 +304,12 @@ export default function AddApplicationPage() {
               </div>
 
               <div>
-                <label htmlFor="home_ownership" className="label">
+                <FieldLabel
+                  htmlFor="home_ownership"
+                  hint={t("hint.homeOwnership")}
+                >
                   {t("newapp.homeOwnership")}
-                </label>
+                </FieldLabel>
                 <select
                   id="home_ownership"
                   value={form.home_ownership}
@@ -316,19 +335,22 @@ export default function AddApplicationPage() {
               </span>
               <div>
                 <h2 className="text-[13.5px] font-semibold text-white">
-                  {t("newapp.financial")}
+                  {t("newapp.financialInfo")}
                 </h2>
                 <p className="text-[11px] text-muted">
-                  {t("newapp.financialDesc")}
+                  {t("newapp.financialInfoDesc")}
                 </p>
               </div>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <label htmlFor="person_income" className="label">
+                <FieldLabel
+                  htmlFor="person_income"
+                  hint={t("hint.annualIncome")}
+                >
                   {t("newapp.annualIncome")}
-                </label>
+                </FieldLabel>
                 <input
                   id="person_income"
                   inputMode="numeric"
@@ -347,9 +369,9 @@ export default function AddApplicationPage() {
               </div>
 
               <div>
-                <label htmlFor="loan_amnt" className="label">
+                <FieldLabel htmlFor="loan_amnt" hint={t("hint.loanAmount")}>
                   {t("newapp.loanAmount")}
-                </label>
+                </FieldLabel>
                 <input
                   id="loan_amnt"
                   inputMode="numeric"
@@ -366,16 +388,19 @@ export default function AddApplicationPage() {
               </div>
 
               <div>
-                <label htmlFor="loan_int_rate" className="label">
+                <FieldLabel
+                  htmlFor="loan_int_rate"
+                  hint={t("hint.interestRate")}
+                >
                   {t("newapp.interestRate")}
-                </label>
+                </FieldLabel>
                 <input
                   id="loan_int_rate"
                   inputMode="decimal"
                   value={form.loan_int_rate}
                   onChange={(event) => updateField("loan_int_rate", event.target.value)}
                   className="field"
-                  placeholder={t("newapp.ratePlaceholder")}
+                  placeholder={t("newapp.interestPlaceholder")}
                 />
                 {errors.loan_int_rate && (
                   <p className="mt-1 text-[11px] text-[#f3938f]">
@@ -385,9 +410,9 @@ export default function AddApplicationPage() {
               </div>
 
               <div>
-                <label htmlFor="loan_intent" className="label">
+                <FieldLabel htmlFor="loan_intent" hint={t("hint.loanPurpose")}>
                   {t("newapp.loanPurpose")}
-                </label>
+                </FieldLabel>
                 <select
                   id="loan_intent"
                   value={form.loan_intent}
@@ -403,9 +428,9 @@ export default function AddApplicationPage() {
               </div>
 
               <div>
-                <label htmlFor="loan_grade" className="label">
+                <FieldLabel htmlFor="loan_grade" hint={t("hint.loanGrade")}>
                   {t("newapp.loanGrade")}
-                </label>
+                </FieldLabel>
                 <select
                   id="loan_grade"
                   value={form.loan_grade}
@@ -421,9 +446,12 @@ export default function AddApplicationPage() {
               </div>
 
               <div>
-                <label htmlFor="cb_person_cred_hist_length" className="label">
+                <FieldLabel
+                  htmlFor="cb_person_cred_hist_length"
+                  hint={t("hint.creditHistory")}
+                >
                   {t("newapp.creditHistory")}
-                </label>
+                </FieldLabel>
                 <input
                   id="cb_person_cred_hist_length"
                   inputMode="numeric"
@@ -435,7 +463,7 @@ export default function AddApplicationPage() {
                     )
                   }
                   className="field"
-                  placeholder="e.g. 5"
+                  placeholder={t("newapp.creditHistoryPlaceholder")}
                 />
                 {errors.cb_person_cred_hist_length && (
                   <p className="mt-1 text-[11px] text-[#f3938f]">
@@ -445,9 +473,12 @@ export default function AddApplicationPage() {
               </div>
 
               <div>
-                <label htmlFor="cb_person_default_on_file" className="label">
-                  {t("newapp.defaultRecord")}
-                </label>
+                <FieldLabel
+                  htmlFor="cb_person_default_on_file"
+                  hint={t("hint.historicalDefault")}
+                >
+                  {t("newapp.historicalDefault")}
+                </FieldLabel>
                 <select
                   id="cb_person_default_on_file"
                   value={form.cb_person_default_on_file}
@@ -473,19 +504,22 @@ export default function AddApplicationPage() {
               </span>
               <div>
                 <h2 className="text-[13.5px] font-semibold text-white">
-                  {t("newapp.employment")}
+                  {t("newapp.employmentInfo")}
                 </h2>
                 <p className="text-[11px] text-muted">
-                  {t("newapp.employmentDesc")}
+                  {t("newapp.employmentInfoDesc")}
                 </p>
               </div>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <label htmlFor="employment_length" className="label">
+                <FieldLabel
+                  htmlFor="employment_length"
+                  hint={t("hint.employmentLength")}
+                >
                   {t("newapp.employmentLength")}
-                </label>
+                </FieldLabel>
                 <input
                   id="employment_length"
                   inputMode="decimal"
@@ -512,17 +546,17 @@ export default function AddApplicationPage() {
               {t("newapp.summary")}
             </h2>
             <div className="mt-3 space-y-2.5">
-              <SummaryRow label={t("newapp.summaryApplicant")} value={form.applicant_name || "—"} />
+              <SummaryRow label={t("newapp.applicant")} value={form.applicant_name || "—"} />
               <SummaryRow
-                label={t("newapp.summaryIncome")}
+                label={t("newapp.annualIncomeShort")}
                 value={income > 0 ? formatCurrency(income) : "—"}
               />
               <SummaryRow
-                label={t("newapp.summaryLoan")}
+                label={t("newapp.loanAmountShort")}
                 value={loan > 0 ? formatCurrency(loan) : "—"}
               />
               <SummaryRow
-                label={t("newapp.summaryRatio")}
+                label={t("newapp.loanToIncome")}
                 value={ratio > 0 ? `${(ratio * 100).toFixed(1)}%` : "—"}
               />
             </div>
@@ -561,10 +595,10 @@ export default function AddApplicationPage() {
               <AlertIcon className="mt-0.5 h-4 w-4 shrink-0 text-risk-mid" />
               <div>
                 <p className="text-[12px] font-medium text-white">
-                  {t("newapp.noteTitle")}
+                  {t("newapp.validationNote")}
                 </p>
                 <p className="mt-1 text-[11px] leading-relaxed text-muted">
-                  {t("newapp.noteBody")}
+                  {t("newapp.validationDesc")}
                 </p>
               </div>
             </div>
@@ -572,7 +606,7 @@ export default function AddApplicationPage() {
 
           <div className="flex items-center justify-center gap-1.5 text-[10.5px] text-muted/60">
             <ArrowRightIcon className="h-3 w-3" />
-            {t("newapp.saveHint")}
+            {t("newapp.savingOpens")}
           </div>
         </div>
       </form>

@@ -28,12 +28,13 @@ const PAGE_SIZE = 8;
 type RiskFilter = "all" | RiskCategory | "unassessed";
 
 export default function ApplicationsPage() {
-  const { applications, assessments } = useCredora();
+  const { applications, assessments, session } = useCredora();
   const { query: search, setQuery: setSearch } = useSearch();
   const { t, status: translateStatus, risk: translateRisk } = useI18n();
   const [status, setStatus] = useState<ApplicationStatus | "all">("all");
   const [risk, setRisk] = useState<RiskFilter>("all");
   const [page, setPage] = useState(1);
+  const canCreate = session?.role === "Risk Analyst";
 
   const latest = useMemo(() => latestAssessments(assessments), [assessments]);
 
@@ -84,10 +85,12 @@ export default function ApplicationsPage() {
         title={t("apps.title")}
         description={t("apps.description")}
         actions={
-          <Link href="/applications/new" className="btn-primary">
-            <PlusIcon className="h-4 w-4" />
-            {t("apps.add")}
-          </Link>
+          canCreate ? (
+            <Link href="/applications/new" className="btn-primary">
+              <PlusIcon className="h-4 w-4" />
+              {t("apps.add")}
+            </Link>
+          ) : undefined
         }
       />
 
@@ -167,12 +170,12 @@ export default function ApplicationsPage() {
                 <button type="button" onClick={resetFilters} className="btn-secondary">
                   {t("apps.resetFilters")}
                 </button>
-              ) : (
+              ) : canCreate ? (
                 <Link href="/applications/new" className="btn-primary">
                   <PlusIcon className="h-4 w-4" />
                   {t("apps.add")}
                 </Link>
-              )
+              ) : undefined
             }
           />
         ) : (

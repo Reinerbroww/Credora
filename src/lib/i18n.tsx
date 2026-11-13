@@ -49,6 +49,7 @@ const en: Dictionary = {
 
   "common.view": "View",
   "common.viewAll": "View all",
+  "common.cancel": "Cancel",
   "common.details": "Details",
   "common.notAssessed": "Not assessed",
   "common.years": "{value} years",
@@ -88,8 +89,8 @@ const en: Dictionary = {
     "Monitor risk distribution and application trends from live records.",
   "login.f3title": "Human-led decisions",
   "login.f3desc":
-    "Model output supports officers; final credit decisions stay with people.",
-  "login.engine": "LightGBM risk engine",
+    "Risk estimates support officers; final credit decisions stay with people.",
+  "login.engine": "Credit risk engine",
   "login.isolation": "Organization-isolated workspace",
   "login.mvp": "MVP · v1.0",
   "login.secureAccess": "Secure access",
@@ -134,7 +135,7 @@ const en: Dictionary = {
   "landing.ctaPrimary": "Create an account",
   "landing.ctaSecondary": "Sign in",
   "landing.point1": "Organization-isolated data",
-  "landing.point2": "LightGBM-powered risk signals",
+  "landing.point2": "AI-assisted risk signals",
   "landing.point3": "Human-led decisions",
   "landing.previewEyebrow": "Portfolio snapshot",
   "landing.previewTitle": "Risk workspace",
@@ -173,16 +174,16 @@ const en: Dictionary = {
   "landing.whyEyebrow": "Why Credora",
   "landing.whyTitle": "Built for accountable credit teams",
   "landing.whyIntro":
-    "Credora keeps model output advisory and every decision attributable to a person, with data scoped to your organization.",
+    "Credora keeps risk estimates advisory and every decision attributable to a person, with data scoped to your organization.",
   "landing.why1Title": "Organization isolation",
   "landing.why1Desc":
-    "Every record is scoped to your workspace tenant.",
+    "Every record stays inside your organization's workspace.",
   "landing.why2Title": "Assessment history",
   "landing.why2Desc":
     "Every score is stored with the application it belongs to.",
   "landing.why3Title": "Clear guardrails",
   "landing.why3Desc":
-    "The model advises; authorized officers decide.",
+    "Risk estimates inform; authorized officers decide.",
   "landing.why4Title": "Portfolio visibility",
   "landing.why4Desc":
     "Track risk distribution and status mix as records change.",
@@ -281,6 +282,12 @@ const en: Dictionary = {
   "role.Risk Analyst": "Risk Analyst",
   "role.Credit Officer": "Credit Officer",
 
+  "perm.restrictedTitle": "Access restricted",
+  "perm.createApps": "Only Risk Analysts can create applications.",
+  "perm.assess": "Only Risk Analysts can run risk assessments.",
+  "perm.decide":
+    "Only Credit Officers can record the final credit decision. You can review the application and assessment details in read-only mode.",
+
   "period.30d": "Last 30 days",
   "period.90d": "Last 90 days",
   "period.year": "This year",
@@ -304,10 +311,10 @@ const en: Dictionary = {
 
   "table.appId": "Application ID",
   "table.applicant": "Applicant",
-  "table.applied": "Applied",
+  "table.applied": "Application date",
   "table.loanAmount": "Loan amount",
   "table.status": "Status",
-  "table.risk": "Risk category",
+  "table.risk": "Risk level",
   "table.action": "Action",
   "table.view": "View",
   "table.review": "Review",
@@ -359,11 +366,11 @@ const en: Dictionary = {
   "newapp.eyebrow": "New record",
   "newapp.title": "Add Application",
   "newapp.description":
-    "Capture the applicant, financial, and employment details required by the risk assessment model. Fields marked with * are required.",
+    "Enter the applicant's details to create a new credit application. Fields marked with * are required.",
   "newapp.cancel": "Cancel",
   "newapp.customerInfo": "Customer information",
   "newapp.customerInfoDesc":
-    "Identity and household details of the applicant.",
+    "Applicant identity and living situation.",
   "newapp.fullName": "Full name *",
   "newapp.fullNamePlaceholder": "e.g. Aisyah Putri",
   "newapp.email": "Email address *",
@@ -373,7 +380,7 @@ const en: Dictionary = {
   "newapp.homeOwnership": "Home ownership",
   "newapp.financialInfo": "Financial information",
   "newapp.financialInfoDesc":
-    "Income, loan amount, and interest assumptions.",
+    "Income, loan request, and repayment indicators.",
   "newapp.annualIncome": "Annual income (IDR) *",
   "newapp.incomePlaceholder": "e.g. 12.000.000",
   "newapp.loanAmount": "Requested loan amount (IDR) *",
@@ -391,7 +398,7 @@ const en: Dictionary = {
   "newapp.defaultYes": "Yes — default on file",
   "newapp.employmentInfo": "Employment information",
   "newapp.employmentInfoDesc":
-    "Employment stability is a key risk signal.",
+    "Job stability helps estimate repayment capacity.",
   "newapp.employmentLength": "Employment length (years) *",
   "newapp.employmentPlaceholder": "e.g. 3.5",
   "newapp.summary": "Application summary",
@@ -405,7 +412,7 @@ const en: Dictionary = {
   "newapp.cancelReturn": "Cancel and return",
   "newapp.validationNote": "Field validation note",
   "newapp.validationDesc":
-    "Fields mirror the 22-feature LightGBM contract. Monetary inputs are entered in IDR and converted to the model's USD-scale before scoring. Do not enter real customer data into this demo workspace.",
+    "Check that income, loan amount, and interest rate are entered correctly before saving. Do not enter real customer data in this demo workspace.",
   "newapp.savingOpens": "Saving opens the application detail page.",
   "newapp.errName": "Enter the applicant's full name.",
   "newapp.errEmail": "Enter a valid email address.",
@@ -447,7 +454,7 @@ const en: Dictionary = {
   "detail.creditHistory": "Credit history length",
   "detail.employmentInfo": "Employment information",
   "detail.employmentInfoSub":
-    "Stability indicators used by the risk engine",
+    "Job stability and past credit behavior",
   "detail.employmentLength": "Employment length",
   "detail.historicalDefault": "Historical default",
   "detail.defaultYes": "Yes — default on file",
@@ -474,7 +481,7 @@ const en: Dictionary = {
     "Run the risk assessment to generate a default probability, risk category, and contributing factors for this application.",
   "detail.decisionSupport": "Decision support",
   "detail.decisionSupportDesc":
-    "Model output is an estimate. Final approval or rejection must be recorded by an authorized Credit Officer after manual review.",
+    "Risk estimates are guidance. Final approval or rejection must be recorded by an authorized Credit Officer after manual review.",
 
   "assess.notFoundTitle": "Application not found",
   "assess.notFoundDesc":
@@ -507,18 +514,18 @@ const en: Dictionary = {
     "The estimate is above the high-risk threshold. A detailed manual review and additional verification are recommended before approval.",
   "assess.contributing": "Contributing factors",
   "assess.contributingSub":
-    "Model signals that move the estimate up or down",
+    "The main factors that increased or reduced the estimated risk",
   "assess.noFactors":
     "No dominant factors were identified for this application.",
-  "assess.modelInfo": "Model information",
-  "assess.modelInfoSub": "Metadata recorded with this assessment",
+  "assess.modelInfo": "Assessment information",
+  "assess.modelInfoSub": "How this result was produced",
   "assess.model": "Model",
   "assess.version": "Version",
-  "assess.output": "Output",
-  "assess.outputValue": "Default probability (0–1)",
+  "assess.output": "Result type",
+  "assess.outputValue": "Estimated probability of default",
   "assess.assessedBy": "Assessed by",
   "assess.caveat":
-    "This workspace uses a deterministic demo scoring engine that stands in for the LightGBM service. Before production, outputs must come from the validated model artifact and be monitored.",
+    "This estimate supports your review; it does not replace it. Always check the applicant's documents and repayment capacity before deciding.",
   "assess.appSummary": "Application summary",
   "assess.applicant": "Applicant",
   "assess.appId": "Application ID",
@@ -526,7 +533,7 @@ const en: Dictionary = {
   "assess.annualIncome": "Annual income",
   "assess.loanToIncome": "Loan-to-income",
   "assess.interestRate": "Interest rate",
-  "assess.officerTitle": "Officer decides, not the model",
+  "assess.officerTitle": "You make the final decision",
   "assess.officerDesc":
     "Continue to the underwriting review to add notes, select the final decision, and record the reason.",
   "assess.backToApp": "Back to application",
@@ -534,13 +541,13 @@ const en: Dictionary = {
   "port.eyebrow": "Analytics",
   "port.title": "Portfolio Analytics",
   "port.description":
-    "A summary of application volume, risk distribution, and review status for the selected period. Only metrics computable from available records are shown.",
+    "Application volume, risk mix, and review status for the selected period.",
   "port.periodAria": "Select period",
   "port.total": "Total Applications",
   "port.assessed": "Assessed",
   "port.hintAssessed": "{percent}% of applications in period",
   "port.avgProb": "Avg. default probability",
-  "port.hintAvg": "Mean of latest assessments",
+  "port.hintAvg": "Average of the latest assessment per application",
   "port.highShare": "High Risk share",
   "port.hintHigh": "{count} high-risk applications",
   "port.riskDist": "Risk Distribution",
@@ -552,52 +559,35 @@ const en: Dictionary = {
   "port.appStatusSub": "Status mix for applications in period",
   "port.noApps": "No applications in this period.",
   "port.statusNote":
-    "Status totals are derived from the current application records. Approved and rejected counts reflect recorded review decisions.",
+    "Status totals come from the current application records. Approved and rejected counts reflect recorded review decisions.",
   "port.riskSummary": "Risk category summary",
   "port.assessedIn": "{count} assessed in {period}",
   "port.shareOfAssessed": "{percent}% of assessed applications",
   "port.footer":
-    "Data reflects the current workspace stored in Neon PostgreSQL and updates immediately after assessments or reviews are saved.",
-  "port.source": "Source: Neon PostgreSQL · LightGBM v1.0",
+    "Data reflects the current workspace and updates immediately after assessments or reviews are saved.",
+  "port.source": "Source: live workspace data",
 
   "settings.eyebrow": "Account",
   "settings.title": "Settings",
   "settings.description":
-    "Manage your profile, review organization details, and control the demo workspace.",
+    "Manage your profile and demo workspace.",
   "settings.active": "Active session",
   "settings.profileInfo": "Profile information",
   "settings.profileInfoSub":
     "Update the display name and contact email used in this workspace.",
   "settings.fullName": "Full name",
   "settings.email": "Email address",
-  "settings.role": "Role",
-  "settings.organization": "Organization",
   "settings.profileUpdated": "Profile updated.",
   "settings.saveChanges": "Save changes",
-  "settings.adminNote":
-    "Role and organization assignment are managed by the administrator.",
-  "settings.orgInfo": "Organization information",
-  "settings.orgInfoSub": "Tenant used to isolate application data.",
-  "settings.orgId": "Organization ID",
-  "settings.dataIsolation": "Data isolation",
-  "settings.dataIsolationValue": "Organization-scoped (server-enforced)",
-  "settings.accessModel": "Access model",
-  "settings.accessModelValue": "Role-based review permissions",
   "settings.security": "Account security",
-  "settings.securitySub": "Authentication settings for this workspace.",
+  "settings.securitySub": "How your account is protected.",
   "settings.securityDesc":
-    "Credentials are verified against the Neon database with hashed passwords, and the session is stored in a signed, HTTP-only cookie. Use strong passwords before exposing this deployment publicly.",
-  "settings.authProvider": "Auth provider",
-  "settings.authProviderValue": "Auth.js (credentials)",
-  "settings.sessionStorage": "Session storage",
-  "settings.sessionStorageValue": "Signed JWT cookie",
-  "settings.dataLayer": "Data layer",
-  "settings.dataLayerValue": "Neon PostgreSQL · organization-scoped",
+    "Use a unique password and sign out on shared devices. Contact your administrator if you notice unusual account activity.",
   "settings.demoControls": "Demo data controls",
   "settings.demoControlsSub":
     "Reset the workspace to the seeded illustrative dataset.",
   "settings.demoWarning":
-    "Resetting removes the organization's applications, assessments, and reviews, then restores the original demo records.",
+    "Resetting removes all applications, assessments, and reviews, then restores the original demo records.",
   "settings.demoRestored": "Demo data restored.",
   "settings.confirmReset": "Confirm reset",
   "settings.resetDemo": "Reset demo data",
@@ -636,7 +626,7 @@ const en: Dictionary = {
   "uwDetail.assessmentRequired": "Assessment required",
   "uwDetail.assessmentRequiredDesc":
     "This application does not have a risk assessment yet. Run an assessment before recording an underwriting decision.",
-  "uwDetail.predictionResult": "Prediction result",
+  "uwDetail.predictionResult": "Risk assessment",
   "uwDetail.defaultProb": "Default probability",
   "uwDetail.appCustomerInfo": "Application and customer information",
   "uwDetail.verify":
@@ -653,7 +643,7 @@ const en: Dictionary = {
   "uwDetail.employmentLength": "Employment length",
   "uwDetail.recordDecision": "Record review decision",
   "uwDetail.recordDecisionSub":
-    "The final decision is made by the officer, not the model.",
+    "You make the final decision based on your review.",
   "uwDetail.reviewNotes": "Review notes",
   "uwDetail.reviewNotesPlaceholder":
     "Record verification steps, supporting documents, and observations.",
@@ -684,11 +674,36 @@ const en: Dictionary = {
   "uwDetail.reviewedAt": "Reviewed at",
   "uwDetail.humanTitle": "Human accountability",
   "uwDetail.humanDesc":
-    "Record a clear reason for every decision. Reviews are stored in the workspace database as a demo record, not a production audit trail.",
+    "Record a clear reason for every decision. Review notes are saved with the application.",
   "uwDetail.guardrails": "Decision guardrails",
-  "uwDetail.guardrail1": "Model output is advisory only.",
+  "uwDetail.guardrail1": "The risk estimate is a guide, not an automatic decision.",
   "uwDetail.guardrail2": "Verify customer data before deciding.",
-  "uwDetail.guardrail3": "Decisions and reasons are logged.",
+  "uwDetail.guardrail3": "Each decision and reason is saved.",
+
+  "hint.loanGrade":
+    "A–G grade set by the lender's credit policy. A is the lowest risk and G is the highest.",
+  "hint.interestRate":
+    "The annual interest rate charged on the loan. A higher rate usually means higher risk.",
+  "hint.loanToIncome":
+    "Loan amount divided by annual income. A higher ratio means the loan is large relative to income.",
+  "hint.creditHistory":
+    "How long the applicant has had a credit record, in years.",
+  "hint.historicalDefault":
+    "Whether the applicant has a past default recorded by a credit bureau.",
+  "hint.employmentLength":
+    "How long the applicant has been in their current job, in years.",
+  "hint.homeOwnership":
+    "Whether the applicant rents, owns, has a mortgage, or has another living arrangement.",
+  "hint.loanPurpose":
+    "The intended use of the loan, such as personal, education, or medical.",
+  "hint.annualIncome":
+    "The applicant's total income per year before tax, in rupiah.",
+  "hint.loanAmount":
+    "The amount the applicant wants to borrow, in rupiah.",
+  "hint.defaultProbability":
+    "Estimated chance that this borrower will fail to repay. Lower is safer.",
+  "hint.riskCategory":
+    "Low, medium, or high risk, based on the default probability band.",
 
   "demo.workspace": "Demo workspace.",
   "demo.desc":
@@ -718,6 +733,7 @@ const id: Dictionary = {
 
   "common.view": "Lihat",
   "common.viewAll": "Lihat semua",
+  "common.cancel": "Batal",
   "common.details": "Detail",
   "common.notAssessed": "Belum dinilai",
   "common.years": "{value} tahun",
@@ -757,8 +773,8 @@ const id: Dictionary = {
     "Pantau distribusi risiko dan tren aplikasi dari data terkini.",
   "login.f3title": "Keputusan dipimpin manusia",
   "login.f3desc":
-    "Keluaran model mendukung petugas; keputusan kredit akhir tetap di tangan manusia.",
-  "login.engine": "Mesin risiko LightGBM",
+    "Perkiraan risiko mendukung petugas; keputusan kredit akhir tetap di tangan manusia.",
+  "login.engine": "Mesin risiko kredit",
   "login.isolation": "Ruang kerja terisolasi per organisasi",
   "login.mvp": "MVP · v1.0",
   "login.secureAccess": "Akses aman",
@@ -802,7 +818,7 @@ const id: Dictionary = {
   "landing.ctaPrimary": "Buat akun",
   "landing.ctaSecondary": "Masuk",
   "landing.point1": "Data terisolasi per organisasi",
-  "landing.point2": "Sinyal risiko bertenaga LightGBM",
+  "landing.point2": "Sinyal risiko berbantuan AI",
   "landing.point3": "Keputusan dipimpin manusia",
   "landing.previewEyebrow": "Ringkasan portofolio",
   "landing.previewTitle": "Ruang kerja risiko",
@@ -841,13 +857,13 @@ const id: Dictionary = {
   "landing.whyEyebrow": "Mengapa Credora",
   "landing.whyTitle": "Dibangun untuk tim kredit yang akuntabel",
   "landing.whyIntro":
-    "Credora menjadikan keluaran model sebagai saran dan setiap keputusan dapat dilacak ke orangnya, dengan data terbatas pada organisasi Anda.",
+    "Credora menjadikan perkiraan risiko sebagai saran dan setiap keputusan dapat dilacak ke orangnya, dengan data terbatas pada organisasi Anda.",
   "landing.why1Title": "Isolasi organisasi",
-  "landing.why1Desc": "Setiap catatan terbatas pada tenant ruang kerja Anda.",
+  "landing.why1Desc": "Setiap catatan tetap berada di ruang kerja organisasi Anda.",
   "landing.why2Title": "Riwayat penilaian",
   "landing.why2Desc": "Setiap skor disimpan bersama aplikasi terkait.",
   "landing.why3Title": "Guardrail yang jelas",
-  "landing.why3Desc": "Model memberi saran; petugas berwenang memutuskan.",
+  "landing.why3Desc": "Perkiraan risiko memberi masukan; petugas berwenang memutuskan.",
   "landing.why4Title": "Visibilitas portofolio",
   "landing.why4Desc":
     "Pantau distribusi risiko dan komposisi status saat data berubah.",
@@ -946,6 +962,12 @@ const id: Dictionary = {
   "role.Risk Analyst": "Analis Risiko",
   "role.Credit Officer": "Petugas Kredit",
 
+  "perm.restrictedTitle": "Akses dibatasi",
+  "perm.createApps": "Hanya Analis Risiko yang dapat membuat aplikasi.",
+  "perm.assess": "Hanya Analis Risiko yang dapat menjalankan penilaian risiko.",
+  "perm.decide":
+    "Hanya Petugas Kredit yang dapat mencatat keputusan kredit akhir. Anda tetap dapat meninjau detail aplikasi dan penilaian secara hanya-baca.",
+
   "period.30d": "30 hari terakhir",
   "period.90d": "90 hari terakhir",
   "period.year": "Tahun ini",
@@ -969,10 +991,10 @@ const id: Dictionary = {
 
   "table.appId": "ID Aplikasi",
   "table.applicant": "Pemohon",
-  "table.applied": "Diajukan",
+  "table.applied": "Tanggal aplikasi",
   "table.loanAmount": "Jumlah pinjaman",
   "table.status": "Status",
-  "table.risk": "Kategori risiko",
+  "table.risk": "Tingkat risiko",
   "table.action": "Aksi",
   "table.view": "Lihat",
   "table.review": "Tinjau",
@@ -1024,11 +1046,11 @@ const id: Dictionary = {
   "newapp.eyebrow": "Catatan baru",
   "newapp.title": "Tambah Aplikasi",
   "newapp.description":
-    "Catat detail pemohon, keuangan, dan pekerjaan yang dibutuhkan model penilaian risiko. Kolom bertanda * wajib diisi.",
+    "Masukkan detail pemohon untuk membuat aplikasi kredit baru. Kolom bertanda * wajib diisi.",
   "newapp.cancel": "Batal",
   "newapp.customerInfo": "Informasi pelanggan",
   "newapp.customerInfoDesc":
-    "Identitas dan detail rumah tangga pemohon.",
+    "Identitas pemohon dan kondisi tempat tinggal.",
   "newapp.fullName": "Nama lengkap *",
   "newapp.fullNamePlaceholder": "mis. Aisyah Putri",
   "newapp.email": "Alamat email *",
@@ -1038,7 +1060,7 @@ const id: Dictionary = {
   "newapp.homeOwnership": "Status tempat tinggal",
   "newapp.financialInfo": "Informasi keuangan",
   "newapp.financialInfoDesc":
-    "Pendapatan, jumlah pinjaman, dan asumsi bunga.",
+    "Pendapatan, permintaan pinjaman, dan indikator pembayaran.",
   "newapp.annualIncome": "Pendapatan tahunan (IDR) *",
   "newapp.incomePlaceholder": "mis. 12.000.000",
   "newapp.loanAmount": "Jumlah pinjaman diminta (IDR) *",
@@ -1056,7 +1078,7 @@ const id: Dictionary = {
   "newapp.defaultYes": "Ya — ada riwayat gagal bayar",
   "newapp.employmentInfo": "Informasi pekerjaan",
   "newapp.employmentInfoDesc":
-    "Stabilitas pekerjaan adalah sinyal risiko utama.",
+    "Stabilitas pekerjaan membantu memperkirakan kemampuan membayar.",
   "newapp.employmentLength": "Lama bekerja (tahun) *",
   "newapp.employmentPlaceholder": "mis. 3.5",
   "newapp.summary": "Ringkasan aplikasi",
@@ -1070,7 +1092,7 @@ const id: Dictionary = {
   "newapp.cancelReturn": "Batal dan kembali",
   "newapp.validationNote": "Catatan validasi kolom",
   "newapp.validationDesc":
-    "Kolom mengikuti kontrak LightGBM dengan 22 fitur. Input moneter dimasukkan dalam IDR dan dikonversi ke skala USD model sebelum penilaian. Jangan masukkan data pelanggan asli ke ruang kerja demo ini.",
+    "Periksa kembali pendapatan, jumlah pinjaman, dan suku bunga sebelum menyimpan. Jangan masukkan data pelanggan asli di ruang kerja demo ini.",
   "newapp.savingOpens": "Menyimpan akan membuka halaman detail aplikasi.",
   "newapp.errName": "Masukkan nama lengkap pemohon.",
   "newapp.errEmail": "Masukkan alamat email yang valid.",
@@ -1111,7 +1133,7 @@ const id: Dictionary = {
   "detail.creditHistory": "Lama riwayat kredit",
   "detail.employmentInfo": "Informasi pekerjaan",
   "detail.employmentInfoSub":
-    "Indikator stabilitas yang digunakan mesin risiko",
+    "Stabilitas pekerjaan dan perilaku kredit sebelumnya",
   "detail.employmentLength": "Lama bekerja",
   "detail.historicalDefault": "Riwayat gagal bayar",
   "detail.defaultYes": "Ya — ada riwayat gagal bayar",
@@ -1138,7 +1160,7 @@ const id: Dictionary = {
     "Jalankan penilaian risiko untuk menghasilkan probabilitas gagal bayar, kategori risiko, dan faktor yang mempengaruhi aplikasi ini.",
   "detail.decisionSupport": "Dukungan keputusan",
   "detail.decisionSupportDesc":
-    "Keluaran model adalah perkiraan. Persetujuan atau penolakan akhir harus dicatat oleh Petugas Kredit yang berwenang setelah tinjauan manual.",
+    "Perkiraan risiko bersifat panduan. Persetujuan atau penolakan akhir harus dicatat oleh Petugas Kredit yang berwenang setelah tinjauan manual.",
 
   "assess.notFoundTitle": "Aplikasi tidak ditemukan",
   "assess.notFoundDesc":
@@ -1171,18 +1193,18 @@ const id: Dictionary = {
     "Perkiraan berada di atas ambang risiko tinggi. Tinjauan manual mendetail dan verifikasi tambahan disarankan sebelum persetujuan.",
   "assess.contributing": "Faktor yang mempengaruhi",
   "assess.contributingSub":
-    "Sinyal model yang menaikkan atau menurunkan perkiraan",
+    "Faktor utama yang menaikkan atau menurunkan perkiraan risiko",
   "assess.noFactors":
     "Tidak ada faktor dominan yang teridentifikasi untuk aplikasi ini.",
-  "assess.modelInfo": "Informasi model",
-  "assess.modelInfoSub": "Metadata yang dicatat dengan penilaian ini",
+  "assess.modelInfo": "Informasi penilaian",
+  "assess.modelInfoSub": "Bagaimana hasil ini dihasilkan",
   "assess.model": "Model",
   "assess.version": "Versi",
-  "assess.output": "Keluaran",
-  "assess.outputValue": "Probabilitas gagal bayar (0–1)",
+  "assess.output": "Jenis hasil",
+  "assess.outputValue": "Perkiraan probabilitas gagal bayar",
   "assess.assessedBy": "Dinilai oleh",
   "assess.caveat":
-    "Ruang kerja ini menggunakan mesin penilaian demo deterministik sebagai pengganti layanan LightGBM. Sebelum produksi, keluaran harus berasal dari artefak model yang tervalidasi dan dipantau.",
+    "Perkiraan ini mendukung tinjauan Anda, bukan menggantikannya. Selalu periksa dokumen pemohon dan kemampuan membayar sebelum memutuskan.",
   "assess.appSummary": "Ringkasan aplikasi",
   "assess.applicant": "Pemohon",
   "assess.appId": "ID Aplikasi",
@@ -1190,7 +1212,7 @@ const id: Dictionary = {
   "assess.annualIncome": "Pendapatan tahunan",
   "assess.loanToIncome": "Rasio pinjaman/pendapatan",
   "assess.interestRate": "Suku bunga",
-  "assess.officerTitle": "Petugas yang memutuskan, bukan model",
+  "assess.officerTitle": "Anda yang memutuskan",
   "assess.officerDesc":
     "Lanjut ke tinjauan underwriting untuk menambah catatan, memilih keputusan akhir, dan mencatat alasannya.",
   "assess.backToApp": "Kembali ke aplikasi",
@@ -1198,13 +1220,13 @@ const id: Dictionary = {
   "port.eyebrow": "Analitik",
   "port.title": "Analitik Portofolio",
   "port.description":
-    "Ringkasan volume aplikasi, distribusi risiko, dan status tinjauan untuk periode terpilih. Hanya metrik yang dapat dihitung dari data tersedia yang ditampilkan.",
+    "Volume aplikasi, komposisi risiko, dan status tinjauan untuk periode terpilih.",
   "port.periodAria": "Pilih periode",
   "port.total": "Total Aplikasi",
   "port.assessed": "Dinilai",
   "port.hintAssessed": "{percent}% aplikasi dalam periode",
   "port.avgProb": "Rata-rata probabilitas gagal bayar",
-  "port.hintAvg": "Rata-rata penilaian terbaru",
+  "port.hintAvg": "Rata-rata penilaian terbaru per aplikasi",
   "port.highShare": "Porsi Risiko Tinggi",
   "port.hintHigh": "{count} aplikasi berisiko tinggi",
   "port.riskDist": "Distribusi Risiko",
@@ -1221,47 +1243,30 @@ const id: Dictionary = {
   "port.assessedIn": "{count} dinilai dalam {period}",
   "port.shareOfAssessed": "{percent}% dari aplikasi yang dinilai",
   "port.footer":
-    "Data mencerminkan ruang kerja saat ini yang tersimpan di Neon PostgreSQL dan diperbarui segera setelah penilaian atau tinjauan disimpan.",
-  "port.source": "Sumber: Neon PostgreSQL · LightGBM v1.0",
+    "Data mencerminkan ruang kerja saat ini dan diperbarui segera setelah penilaian atau tinjauan disimpan.",
+  "port.source": "Sumber: data ruang kerja langsung",
 
   "settings.eyebrow": "Akun",
   "settings.title": "Pengaturan",
   "settings.description":
-    "Kelola profil Anda, tinjau detail organisasi, dan kendalikan ruang kerja demo.",
+    "Kelola profil dan ruang kerja demo Anda.",
   "settings.active": "Sesi aktif",
   "settings.profileInfo": "Informasi profil",
   "settings.profileInfoSub":
     "Perbarui nama tampilan dan email kontak yang digunakan di ruang kerja ini.",
   "settings.fullName": "Nama lengkap",
   "settings.email": "Alamat email",
-  "settings.role": "Peran",
-  "settings.organization": "Organisasi",
   "settings.profileUpdated": "Profil diperbarui.",
   "settings.saveChanges": "Simpan perubahan",
-  "settings.adminNote":
-    "Penetapan peran dan organisasi dikelola oleh administrator.",
-  "settings.orgInfo": "Informasi organisasi",
-  "settings.orgInfoSub": "Tenant yang digunakan untuk mengisolasi data aplikasi.",
-  "settings.orgId": "ID Organisasi",
-  "settings.dataIsolation": "Isolasi data",
-  "settings.dataIsolationValue": "Terbatas per organisasi (ditegakkan server)",
-  "settings.accessModel": "Model akses",
-  "settings.accessModelValue": "Izin tinjauan berbasis peran",
   "settings.security": "Keamanan akun",
-  "settings.securitySub": "Pengaturan autentikasi untuk ruang kerja ini.",
+  "settings.securitySub": "Bagaimana akun Anda dilindungi.",
   "settings.securityDesc":
-    "Kredensial diverifikasi terhadap database Neon dengan kata sandi ter-hash, dan sesi disimpan dalam cookie bertanda tangan yang hanya HTTP. Gunakan kata sandi yang kuat sebelum mengekspos penerapan ini secara publik.",
-  "settings.authProvider": "Penyedia autentikasi",
-  "settings.authProviderValue": "Auth.js (kredensial)",
-  "settings.sessionStorage": "Penyimpanan sesi",
-  "settings.sessionStorageValue": "Cookie JWT bertanda tangan",
-  "settings.dataLayer": "Lapisan data",
-  "settings.dataLayerValue": "Neon PostgreSQL · terbatas per organisasi",
+    "Gunakan kata sandi unik dan keluar saat memakai perangkat bersama. Hubungi administrator jika Anda melihat aktivitas akun yang mencurigakan.",
   "settings.demoControls": "Kontrol data demo",
   "settings.demoControlsSub":
     "Kembalikan ruang kerja ke kumpulan data ilustratif awal.",
   "settings.demoWarning":
-    "Mengatur ulang akan menghapus aplikasi, penilaian, dan tinjauan organisasi, lalu memulihkan catatan demo asli.",
+    "Mengatur ulang akan menghapus semua aplikasi, penilaian, dan tinjauan, lalu memulihkan catatan demo asli.",
   "settings.demoRestored": "Data demo dipulihkan.",
   "settings.confirmReset": "Konfirmasi atur ulang",
   "settings.resetDemo": "Atur ulang data demo",
@@ -1300,7 +1305,7 @@ const id: Dictionary = {
   "uwDetail.assessmentRequired": "Penilaian diperlukan",
   "uwDetail.assessmentRequiredDesc":
     "Aplikasi ini belum memiliki penilaian risiko. Jalankan penilaian sebelum mencatat keputusan underwriting.",
-  "uwDetail.predictionResult": "Hasil prediksi",
+  "uwDetail.predictionResult": "Penilaian risiko",
   "uwDetail.defaultProb": "Probabilitas gagal bayar",
   "uwDetail.appCustomerInfo": "Informasi aplikasi dan pelanggan",
   "uwDetail.verify": "Verifikasi informasi ini dengan dokumen pendukung.",
@@ -1316,7 +1321,7 @@ const id: Dictionary = {
   "uwDetail.employmentLength": "Lama bekerja",
   "uwDetail.recordDecision": "Catat keputusan tinjauan",
   "uwDetail.recordDecisionSub":
-    "Keputusan akhir dibuat oleh petugas, bukan model.",
+    "Anda membuat keputusan akhir berdasarkan tinjauan Anda.",
   "uwDetail.reviewNotes": "Catatan tinjauan",
   "uwDetail.reviewNotesPlaceholder":
     "Catat langkah verifikasi, dokumen pendukung, dan pengamatan.",
@@ -1346,11 +1351,36 @@ const id: Dictionary = {
   "uwDetail.reviewedAt": "Ditinjau pada",
   "uwDetail.humanTitle": "Akuntabilitas manusia",
   "uwDetail.humanDesc":
-    "Catat alasan yang jelas untuk setiap keputusan. Tinjauan disimpan di database ruang kerja sebagai catatan demo, bukan jejak audit produksi.",
+    "Catat alasan yang jelas untuk setiap keputusan. Catatan tinjauan disimpan bersama aplikasi.",
   "uwDetail.guardrails": "Panduan keputusan",
-  "uwDetail.guardrail1": "Keluaran model hanya bersifat saran.",
+  "uwDetail.guardrail1": "Perkiraan risiko adalah panduan, bukan keputusan otomatis.",
   "uwDetail.guardrail2": "Verifikasi data pelanggan sebelum memutuskan.",
-  "uwDetail.guardrail3": "Keputusan dan alasan dicatat.",
+  "uwDetail.guardrail3": "Setiap keputusan dan alasan disimpan.",
+
+  "hint.loanGrade":
+    "Peringkat A–G sesuai kebijakan kredit pemberi pinjaman. A adalah risiko terendah dan G tertinggi.",
+  "hint.interestRate":
+    "Suku bunga tahunan yang dikenakan pada pinjaman. Suku bunga lebih tinggi biasanya berarti risiko lebih tinggi.",
+  "hint.loanToIncome":
+    "Jumlah pinjaman dibagi pendapatan tahunan. Rasio lebih tinggi berarti pinjaman relatif besar terhadap pendapatan.",
+  "hint.creditHistory":
+    "Berapa lama pemohon memiliki riwayat kredit, dalam tahun.",
+  "hint.historicalDefault":
+    "Apakah pemohon memiliki catatan gagal bayar dari biro kredit.",
+  "hint.employmentLength":
+    "Berapa lama pemohon bekerja di pekerjaan saat ini, dalam tahun.",
+  "hint.homeOwnership":
+    "Apakah pemohon menyewa, memiliki rumah, memiliki KPR, atau tinggal dengan cara lain.",
+  "hint.loanPurpose":
+    "Tujuan penggunaan pinjaman, seperti pribadi, pendidikan, atau medis.",
+  "hint.annualIncome":
+    "Total pendapatan pemohon per tahun sebelum pajak, dalam rupiah.",
+  "hint.loanAmount":
+    "Jumlah yang ingin dipinjam pemohon, dalam rupiah.",
+  "hint.defaultProbability":
+    "Perkiraan peluang peminjam gagal membayar. Semakin rendah, semakin aman.",
+  "hint.riskCategory":
+    "Risiko rendah, sedang, atau tinggi berdasarkan rentang probabilitas gagal bayar.",
 
   "demo.workspace": "Ruang kerja demo.",
   "demo.desc":

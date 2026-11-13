@@ -1,4 +1,4 @@
-import { requireUser } from "@/lib/api-auth";
+import { requireRole } from "@/lib/api-auth";
 import { createAssessment } from "@/lib/server-data";
 
 export const runtime = "nodejs";
@@ -8,10 +8,9 @@ export async function POST(
   _request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const user = await requireUser();
-  if (!user) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const gate = await requireRole("Risk Analyst");
+  if (!gate.ok) return gate.response;
+  const user = gate.user;
 
   const { id } = await params;
   const assessment = await createAssessment(

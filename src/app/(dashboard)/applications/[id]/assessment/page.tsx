@@ -17,6 +17,7 @@ import {
   Card,
   EmptyState,
   InfoRow,
+  InfoTip,
   PageHeader,
   RiskBadge,
   SectionCard,
@@ -50,9 +51,11 @@ export default function AssessmentResultPage() {
     latestAssessment,
     runAssessment,
     assessments,
+    session,
   } = useCredora();
   const { t, risk, role } = useI18n();
   const [running, setRunning] = useState(false);
+  const canAssess = session?.role === "Risk Analyst";
 
   const application = applicationById(params.id);
   const assessment = latestAssessment(params.id);
@@ -88,18 +91,22 @@ export default function AssessmentResultPage() {
           <EmptyState
             icon={<SparkIcon className="h-5 w-5" />}
             title={t("assess.noAvailableTitle")}
-            description={t("assess.noAvailableDesc")}
+            description={
+              canAssess ? t("assess.noAvailableDesc") : t("perm.assess")
+            }
             action={
-              <button
-                type="button"
-                onClick={async () => {
-                  await runAssessment(application.id);
-                }}
-                className="btn-primary"
-              >
-                <SparkIcon className="h-4 w-4" />
-                {t("assess.run")}
-              </button>
+              canAssess ? (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    await runAssessment(application.id);
+                  }}
+                  className="btn-primary"
+                >
+                  <SparkIcon className="h-4 w-4" />
+                  {t("assess.run")}
+                </button>
+              ) : undefined
             }
           />
         </Card>
@@ -139,15 +146,17 @@ export default function AssessmentResultPage() {
           })}
           actions={
             <>
-              <button
-                type="button"
-                onClick={handleRerun}
-                disabled={running}
-                className="btn-secondary"
-              >
-                <RefreshIcon className="h-4 w-4" />
-                {running ? t("assess.assessing") : t("assess.rerun")}
-              </button>
+              {canAssess && (
+                <button
+                  type="button"
+                  onClick={handleRerun}
+                  disabled={running}
+                  className="btn-secondary"
+                >
+                  <RefreshIcon className="h-4 w-4" />
+                  {running ? t("assess.assessing") : t("assess.rerun")}
+                </button>
+              )}
               <Link
                 href={`/underwriting/${application.id}`}
                 className="btn-primary"
@@ -169,9 +178,6 @@ export default function AssessmentResultPage() {
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <RiskBadge category={assessment.risk_category} />
-              <span className="rounded-full border border-line bg-white/[0.03] px-2.5 py-1 text-[10px] font-medium text-muted">
-                {assessment.model_name} · {assessment.model_version}
-              </span>
             </div>
             <h2 className="mt-3 text-[20px] font-semibold tracking-tight text-white">
               {risk(assessment.risk_category)}
@@ -183,10 +189,12 @@ export default function AssessmentResultPage() {
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
               <Metric
                 label={t("assess.defaultProb")}
+                hint={t("hint.defaultProbability")}
                 value={formatPercent(assessment.default_probability, 2)}
               />
               <Metric
                 label={t("assess.riskCategory")}
+                hint={t("hint.riskCategory")}
                 value={risk(assessment.risk_category)}
               />
               <Metric
@@ -235,11 +243,6 @@ export default function AssessmentResultPage() {
             subtitle={t("assess.modelInfoSub")}
           >
             <div className="grid gap-x-8 sm:grid-cols-2">
-              <InfoRow label={t("assess.model")} value={assessment.model_name} />
-              <InfoRow
-                label={t("assess.version")}
-                value={assessment.model_version}
-              />
               <InfoRow
                 label={t("assess.output")}
                 value={t("assess.outputValue")}
@@ -324,11 +327,20 @@ export default function AssessmentResultPage() {
   );
 }
 
-function Metric({ label, value }: { label: string; value: string }) {
+function Metric({
+  label,
+  value,
+  hint,
+}: {
+  label: string;
+  value: string;
+  hint?: string;
+}) {
   return (
     <div className="rounded-lg border border-line bg-white/[0.02] px-3.5 py-2.5">
-      <p className="text-[10px] uppercase tracking-[0.14em] text-muted/80">
+      <p className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.14em] text-muted/80">
         {label}
+        {hint && <InfoTip text={hint} />}
       </p>
       <p className="stat-number mt-1 text-[13px] font-semibold text-white">
         {value}

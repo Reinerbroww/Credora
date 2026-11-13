@@ -20,6 +20,7 @@ import {
   Card,
   EmptyState,
   InfoRow,
+  InfoTip,
   PageHeader,
   RiskBadge,
   SectionCard,
@@ -38,10 +39,11 @@ import { useCredora } from "@/lib/store";
 export default function ApplicationDetailPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
-  const { applicationById, assessments, latestAssessment, runAssessment } =
+  const { applicationById, assessments, latestAssessment, runAssessment, session } =
     useCredora();
   const { t, home, intent } = useI18n();
   const [running, setRunning] = useState(false);
+  const canAssess = session?.role === "Risk Analyst";
 
   const application = applicationById(params.id);
 
@@ -111,23 +113,25 @@ export default function ApplicationDetailPage() {
                   {t("detail.openReview")}
                 </Link>
               )}
-              <button
-                type="button"
-                onClick={handleRun}
-                disabled={running}
-                className="btn-primary"
-              >
-                {latest ? (
-                  <RefreshIcon className="h-4 w-4" />
-                ) : (
-                  <SparkIcon className="h-4 w-4" />
-                )}
-                {running
-                  ? t("detail.assessing")
-                  : latest
-                    ? t("detail.rerun")
-                    : t("detail.run")}
-              </button>
+              {canAssess && (
+                <button
+                  type="button"
+                  onClick={handleRun}
+                  disabled={running}
+                  className="btn-primary"
+                >
+                  {latest ? (
+                    <RefreshIcon className="h-4 w-4" />
+                  ) : (
+                    <SparkIcon className="h-4 w-4" />
+                  )}
+                  {running
+                    ? t("detail.assessing")
+                    : latest
+                      ? t("detail.rerun")
+                      : t("detail.run")}
+                </button>
+              )}
             </>
           }
         />
@@ -155,6 +159,7 @@ export default function ApplicationDetailPage() {
               />
               <InfoRow
                 label={t("detail.homeOwnership")}
+                hint={t("hint.homeOwnership")}
                 value={home(application.home_ownership)}
               />
             </div>
@@ -168,30 +173,37 @@ export default function ApplicationDetailPage() {
             <div className="grid gap-x-8 sm:grid-cols-2">
               <InfoRow
                 label={t("detail.annualIncome")}
+                hint={t("hint.annualIncome")}
                 value={formatCurrency(application.person_income)}
               />
               <InfoRow
                 label={t("detail.loanAmount")}
+                hint={t("hint.loanAmount")}
                 value={formatCurrency(application.loan_amnt)}
               />
               <InfoRow
                 label={t("detail.interestRate")}
+                hint={t("hint.interestRate")}
                 value={`${application.loan_int_rate.toFixed(2)}%`}
               />
               <InfoRow
                 label={t("detail.loanToIncome")}
+                hint={t("hint.loanToIncome")}
                 value={formatPercent(application.loan_percent_income)}
               />
               <InfoRow
                 label={t("detail.loanPurpose")}
+                hint={t("hint.loanPurpose")}
                 value={intent(application.loan_intent)}
               />
               <InfoRow
                 label={t("detail.loanGrade")}
+                hint={t("hint.loanGrade")}
                 value={application.loan_grade}
               />
               <InfoRow
                 label={t("detail.creditHistory")}
+                hint={t("hint.creditHistory")}
                 value={t("common.years", {
                   value: application.cb_person_cred_hist_length,
                 })}
@@ -207,12 +219,14 @@ export default function ApplicationDetailPage() {
             <div className="grid gap-x-8 sm:grid-cols-2">
               <InfoRow
                 label={t("detail.employmentLength")}
+                hint={t("hint.employmentLength")}
                 value={t("common.years", {
                   value: application.employment_length.toFixed(1),
                 })}
               />
               <InfoRow
                 label={t("detail.historicalDefault")}
+                hint={t("hint.historicalDefault")}
                 value={
                   application.cb_person_default_on_file === "Y"
                     ? t("detail.defaultYes")
@@ -234,17 +248,19 @@ export default function ApplicationDetailPage() {
             {history.length === 0 ? (
               <div className="px-5 py-8 text-center">
                 <p className="text-[12.5px] text-muted">
-                  {t("detail.noAssessment")}
+                  {canAssess ? t("detail.noAssessment") : t("perm.assess")}
                 </p>
-                <button
-                  type="button"
-                  onClick={handleRun}
-                  disabled={running}
-                  className="btn-primary mt-4"
-                >
-                  <SparkIcon className="h-4 w-4" />
-                  {t("detail.run")}
-                </button>
+                {canAssess && (
+                  <button
+                    type="button"
+                    onClick={handleRun}
+                    disabled={running}
+                    className="btn-primary mt-4"
+                  >
+                    <SparkIcon className="h-4 w-4" />
+                    {t("detail.run")}
+                  </button>
+                )}
               </div>
             ) : (
               <ul className="divide-y divide-line-soft">
@@ -269,10 +285,10 @@ export default function ApplicationDetailPage() {
                             </span>
                           )}
                         </div>
-                        <p className="mt-1 text-[11px] text-muted">
-                          {assessment.model_name} · {assessment.model_version} ·{" "}
+                        <p className="mt-1 flex items-center gap-1.5 text-[11px] text-muted">
                           {t("detail.defaultProb")}{" "}
                           {formatPercent(assessment.default_probability, 2)}
+                          <InfoTip text={t("hint.defaultProbability")} />
                         </p>
                       </div>
                     </div>

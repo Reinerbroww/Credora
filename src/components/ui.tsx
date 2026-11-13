@@ -277,18 +277,72 @@ export function EmptyState({
   );
 }
 
+export function InfoTip({
+  text,
+  className,
+}: {
+  text: string;
+  className?: string;
+}) {
+  return (
+    <span
+      className={cn(
+        "group/info relative inline-flex shrink-0 align-middle",
+        className,
+      )}
+    >
+      <span
+        tabIndex={0}
+        role="note"
+        aria-label={text}
+        className="grid h-3.5 w-3.5 cursor-help place-items-center rounded-full border border-line text-[8px] font-semibold leading-none text-muted transition-colors hover:border-sage/40 hover:text-sage focus:outline-none focus-visible:border-sage/50 focus-visible:text-sage"
+      >
+        i
+      </span>
+      <span
+        role="tooltip"
+        className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 w-60 -translate-x-1/2 rounded-lg border border-line bg-[#0f1712] px-3 py-2 text-left text-[11px] font-normal leading-relaxed text-[#d6e0d9] opacity-0 shadow-xl shadow-black/50 transition-opacity duration-150 group-hover/info:opacity-100 group-focus-within/info:opacity-100"
+      >
+        {text}
+      </span>
+    </span>
+  );
+}
+
+export function FieldLabel({
+  htmlFor,
+  hint,
+  children,
+}: {
+  htmlFor?: string;
+  hint?: string;
+  children: ReactNode;
+}) {
+  return (
+    <label htmlFor={htmlFor} className="label flex items-center gap-1.5">
+      <span>{children}</span>
+      {hint && <InfoTip text={hint} />}
+    </label>
+  );
+}
+
 export function InfoRow({
   label,
   value,
   mono = false,
+  hint,
 }: {
   label: string;
   value: ReactNode;
   mono?: boolean;
+  hint?: string;
 }) {
   return (
     <div className="flex items-start justify-between gap-4 border-b border-line-soft py-2.5 last:border-b-0">
-      <span className="text-[12px] text-muted">{label}</span>
+      <span className="flex items-center gap-1.5 text-[12px] text-muted">
+        {label}
+        {hint && <InfoTip text={hint} />}
+      </span>
       <span
         className={cn(
           "text-right text-[12.5px] font-medium text-white",

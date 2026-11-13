@@ -1,4 +1,4 @@
-import { requireUser } from "@/lib/api-auth";
+import { requireRole } from "@/lib/api-auth";
 import { saveReview, type ReviewPayload } from "@/lib/server-data";
 import type { FinalDecision, ReviewStatus } from "@/lib/types";
 
@@ -37,10 +37,9 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const user = await requireUser();
-  if (!user) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const gate = await requireRole("Credit Officer");
+  if (!gate.ok) return gate.response;
+  const user = gate.user;
 
   const payload = parsePayload(await request.json().catch(() => null));
   if (!payload) {

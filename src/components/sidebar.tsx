@@ -93,9 +93,6 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
               {t("sidebar.online")}
             </span>
           </div>
-          <p className="mt-1.5 text-[10.5px] leading-relaxed text-muted">
-            LightGBM · v1.0
-          </p>
         </div>
       </div>
 

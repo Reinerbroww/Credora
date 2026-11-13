@@ -1,4 +1,4 @@
-import { requireUser } from "@/lib/api-auth";
+import { requireRole } from "@/lib/api-auth";
 import { createApplication } from "@/lib/server-data";
 import type {
   ApplicationInput,
@@ -86,10 +86,9 @@ function parseInput(body: unknown): ApplicationInput | null {
 }
 
 export async function POST(request: Request) {
-  const user = await requireUser();
-  if (!user) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const gate = await requireRole("Risk Analyst");
+  if (!gate.ok) return gate.response;
+  const user = gate.user;
 
   const input = parseInput(await request.json().catch(() => null));
   if (!input) {
