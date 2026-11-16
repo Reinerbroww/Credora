@@ -7,12 +7,11 @@ import {
   AlertIcon,
   ArrowRightIcon,
   CheckIcon,
-  ShieldIcon,
   UserIcon,
   WalletIcon,
   BuildingIcon,
 } from "@/components/icons";
-import { Card, EmptyState, FieldLabel, PageHeader } from "@/components/ui";
+import { Card, FieldLabel, PageHeader } from "@/components/ui";
 import { formatCurrency } from "@/lib/format";
 import { useI18n } from "@/lib/i18n";
 import { useCredora } from "@/lib/store";
@@ -97,10 +96,11 @@ function formatThousands(value: string): string {
 
 export default function AddApplicationPage() {
   const router = useRouter();
-  const { addApplication, session, ready } = useCredora();
+  const { addApplication } = useCredora();
   const { t, home, intent } = useI18n();
   const [form, setForm] = useState<FormState>(INITIAL_FORM);
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
+  const [submitError, setSubmitError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const income = toCurrency(form.person_income);
@@ -174,6 +174,7 @@ export default function AddApplicationPage() {
     if (!validate()) return;
 
     setSubmitting(true);
+    setSubmitError("");
     try {
       const id = await addApplication({
         applicant_name: form.applicant_name.trim(),
@@ -192,31 +193,15 @@ export default function AddApplicationPage() {
         cb_person_default_on_file: form.cb_person_default_on_file,
       });
       router.push(`/applications/${id}`);
-    } catch {
-      setErrors((current) => ({
-        ...current,
-        applicant_name: t("newapp.errSave"),
-      }));
+    } catch (error) {
+      setSubmitError(
+        error instanceof Error && error.message
+          ? error.message
+          : t("newapp.errSave"),
+      );
       setSubmitting(false);
     }
   };
-
-  if (ready && session?.role !== "Risk Analyst") {
-    return (
-      <Card>
-        <EmptyState
-          icon={<ShieldIcon className="h-5 w-5" />}
-          title={t("perm.restrictedTitle")}
-          description={t("perm.createApps")}
-          action={
-            <Link href="/applications" className="btn-primary">
-              {t("detail.backToApps")}
-            </Link>
-          }
-        />
-      </Card>
-    );
-  }
 
   return (
     <div className="fade-in space-y-5">
@@ -574,6 +559,11 @@ export default function AddApplicationPage() {
               </div>
             </div>
 
+            {submitError && (
+              <p className="mt-4 rounded-lg border border-risk-high/25 bg-risk-high/10 px-3 py-2 text-[11.5px] text-[#f3938f]">
+                {submitError}
+              </p>
+            )}
             <button
               type="submit"
               disabled={submitting}

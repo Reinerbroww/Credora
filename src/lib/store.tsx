@@ -223,7 +223,10 @@ export function CredoraProvider({ children }: { children: ReactNode }) {
       body: JSON.stringify(input),
     });
     if (!response.ok) {
-      throw new Error("Unable to save the application.");
+      const payload = (await response.json().catch(() => null)) as
+        | { error?: string }
+        | null;
+      throw new Error(payload?.error ?? "Unable to save the application.");
     }
 
     const payload = (await response.json()) as { application: Application };

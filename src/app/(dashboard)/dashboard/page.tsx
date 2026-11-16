@@ -47,9 +47,8 @@ function useToday(locale: Locale): string {
 }
 
 export default function DashboardPage() {
-  const { applications, assessments, reviews, session } = useCredora();
+  const { applications, assessments, reviews } = useCredora();
   const { t, risk, locale } = useI18n();
-  const canCreate = session?.role === "Risk Analyst";
 
   const counts = riskCounts(applications, assessments);
   const pendingReview = awaitingReviewCount(applications, reviews);
@@ -100,12 +99,10 @@ export default function DashboardPage() {
               <TrendIcon className="h-4 w-4" />
               {t("dash.viewPortfolio")}
             </Link>
-            {canCreate && (
-              <Link href="/applications/new" className="btn-primary">
-                <PlusIcon className="h-4 w-4" />
-                {t("dash.newApplication")}
-              </Link>
-            )}
+            <Link href="/applications/new" className="btn-primary">
+              <PlusIcon className="h-4 w-4" />
+              {t("dash.newApplication")}
+            </Link>
           </>
         }
       />

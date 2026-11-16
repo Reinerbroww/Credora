@@ -86,7 +86,7 @@ function parseInput(body: unknown): ApplicationInput | null {
 }
 
 export async function POST(request: Request) {
-  const gate = await requireRole("Risk Analyst");
+  const gate = await requireRole("Risk Analyst", "Credit Officer");
   if (!gate.ok) return gate.response;
   const user = gate.user;
 
