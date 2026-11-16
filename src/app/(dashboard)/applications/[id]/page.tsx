@@ -13,6 +13,7 @@ import {
   RefreshIcon,
   ShieldIcon,
   SparkIcon,
+  SpinnerIcon,
   UserIcon,
   WalletIcon,
 } from "@/components/icons";
@@ -120,7 +121,9 @@ export default function ApplicationDetailPage() {
                   disabled={running}
                   className="btn-primary"
                 >
-                  {latest ? (
+                  {running ? (
+                    <SpinnerIcon className="h-4 w-4 animate-spin" />
+                  ) : latest ? (
                     <RefreshIcon className="h-4 w-4" />
                   ) : (
                     <SparkIcon className="h-4 w-4" />
@@ -257,8 +260,12 @@ export default function ApplicationDetailPage() {
                     disabled={running}
                     className="btn-primary mt-4"
                   >
-                    <SparkIcon className="h-4 w-4" />
-                    {t("detail.run")}
+                    {running ? (
+                      <SpinnerIcon className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <SparkIcon className="h-4 w-4" />
+                    )}
+                    {running ? t("detail.assessing") : t("detail.run")}
                   </button>
                 )}
               </div>

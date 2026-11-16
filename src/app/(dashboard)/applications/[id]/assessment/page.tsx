@@ -12,6 +12,7 @@ import {
   RefreshIcon,
   ShieldIcon,
   SparkIcon,
+  SpinnerIcon,
 } from "@/components/icons";
 import {
   Card,
@@ -99,12 +100,19 @@ export default function AssessmentResultPage() {
                 <button
                   type="button"
                   onClick={async () => {
+                    setRunning(true);
                     await runAssessment(application.id);
+                    setRunning(false);
                   }}
+                  disabled={running}
                   className="btn-primary"
                 >
-                  <SparkIcon className="h-4 w-4" />
-                  {t("assess.run")}
+                  {running ? (
+                    <SpinnerIcon className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <SparkIcon className="h-4 w-4" />
+                  )}
+                  {running ? t("assess.assessing") : t("assess.run")}
                 </button>
               ) : undefined
             }
@@ -153,7 +161,11 @@ export default function AssessmentResultPage() {
                   disabled={running}
                   className="btn-secondary"
                 >
-                  <RefreshIcon className="h-4 w-4" />
+                  {running ? (
+                    <SpinnerIcon className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <RefreshIcon className="h-4 w-4" />
+                  )}
                   {running ? t("assess.assessing") : t("assess.rerun")}
                 </button>
               )}

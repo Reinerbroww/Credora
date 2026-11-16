@@ -12,6 +12,7 @@ import {
   FolderIcon,
   ShieldIcon,
   SparkIcon,
+  SpinnerIcon,
 } from "@/components/icons";
 import {
   Card,
@@ -69,6 +70,8 @@ export default function UnderwritingDetailPage() {
   const [reason, setReason] = useState(review?.decision_reason ?? "");
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [runningAssessment, setRunningAssessment] = useState(false);
 
   if (!application) {
     return (
@@ -101,12 +104,14 @@ export default function UnderwritingDetailPage() {
       return;
     }
 
+    setSaving(true);
     const ok = await saveReview(application.id, {
       review_status: decision === "Manual Review" ? "In Review" : "Completed",
       final_decision: decision,
       decision_reason: reason.trim(),
       review_notes: notes.trim(),
     });
+    setSaving(false);
 
     if (!ok) {
       setError(t("uwDetail.errSave"));
@@ -163,12 +168,19 @@ export default function UnderwritingDetailPage() {
                 <button
                   type="button"
                   onClick={async () => {
+                    setRunningAssessment(true);
                     await runAssessment(application.id);
+                    setRunningAssessment(false);
                   }}
+                  disabled={runningAssessment}
                   className="btn-primary"
                 >
-                  <SparkIcon className="h-4 w-4" />
-                  {t("assess.run")}
+                  {runningAssessment ? (
+                    <SpinnerIcon className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <SparkIcon className="h-4 w-4" />
+                  )}
+                  {runningAssessment ? t("assess.assessing") : t("assess.run")}
                 </button>
               ) : undefined
             }
@@ -368,9 +380,15 @@ export default function UnderwritingDetailPage() {
                 )}
 
                 <div className="flex flex-wrap items-center gap-2">
-                  <button type="submit" className="btn-primary">
-                    <CheckIcon className="h-4 w-4" />
-                    {t("uwDetail.saveReview")}
+                  <button type="submit" disabled={saving} className="btn-primary">
+                    {saving ? (
+                      <SpinnerIcon className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <CheckIcon className="h-4 w-4" />
+                    )}
+                    {saving
+                      ? t("uwDetail.saving")
+                      : t("uwDetail.saveReview")}
                   </button>
                   <Link
                     href={`/applications/${application.id}/assessment`}

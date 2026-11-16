@@ -661,6 +661,7 @@ const en: Dictionary = {
   "uwDetail.saved":
     "Review saved. The application status has been updated.",
   "uwDetail.saveReview": "Save Review",
+  "uwDetail.saving": "Saving...",
   "uwDetail.viewAssessment": "View assessment result",
   "uwDetail.reviewContext": "Review context",
   "uwDetail.appId": "Application ID",
@@ -1338,6 +1339,7 @@ const id: Dictionary = {
   "uwDetail.errSave": "Tidak dapat menyimpan tinjauan. Silakan coba lagi.",
   "uwDetail.saved": "Tinjauan disimpan. Status aplikasi telah diperbarui.",
   "uwDetail.saveReview": "Simpan Tinjauan",
+  "uwDetail.saving": "Menyimpan...",
   "uwDetail.viewAssessment": "Lihat hasil penilaian",
   "uwDetail.reviewContext": "Konteks tinjauan",
   "uwDetail.appId": "ID Aplikasi",

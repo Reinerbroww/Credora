@@ -222,6 +222,14 @@ export function RefreshIcon(props: IconProps) {
   );
 }
 
+export function SpinnerIcon(props: IconProps) {
+  return (
+    <Base {...props}>
+      <path d="M21 12a9 9 0 1 1-6.22-8.56" />
+    </Base>
+  );
+}
+
 export function UserIcon(props: IconProps) {
   return (
     <Base {...props}>
