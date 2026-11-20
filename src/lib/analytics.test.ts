@@ -58,7 +58,7 @@ function makeAssessment(
     id: `assessment-${sequence}`,
     application_id: applicationId,
     model_name: "LightGBM",
-    model_version: "v1.0-demo",
+    model_version: "v1.0",
     default_probability: probability,
     risk_category: category,
     contributing_factors: [],

@@ -73,7 +73,6 @@ interface CredoraContextValue {
     applicationId: string,
     payload: ReviewPayload,
   ) => Promise<boolean>;
-  resetDemoData: () => Promise<void>;
   applicationById: (id: string) => Application | undefined;
   latestAssessment: (applicationId: string) => RiskAssessment | undefined;
   latestReview: (applicationId: string) => UnderwritingReview | undefined;
@@ -307,14 +306,6 @@ export function CredoraProvider({ children }: { children: ReactNode }) {
     [],
   );
 
-  const resetDemoData = useCallback(async () => {
-    const response = await fetch("/api/demo/reset", { method: "POST" });
-    if (!response.ok) return;
-
-    const next = (await response.json()) as CredoraData;
-    setData(next);
-  }, []);
-
   const applicationById = useCallback(
     (id: string) => data.applications.find((application) => application.id === id),
     [data.applications],
@@ -355,7 +346,6 @@ export function CredoraProvider({ children }: { children: ReactNode }) {
       addApplication,
       runAssessment,
       saveReview,
-      resetDemoData,
       applicationById,
       latestAssessment,
       latestReview,
@@ -370,7 +360,6 @@ export function CredoraProvider({ children }: { children: ReactNode }) {
       addApplication,
       runAssessment,
       saveReview,
-      resetDemoData,
       applicationById,
       latestAssessment,
       latestReview,

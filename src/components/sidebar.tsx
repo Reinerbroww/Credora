@@ -39,7 +39,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
           {t("sidebar.workspace")}
         </p>
         <p className="mt-1 truncate text-[12.5px] font-medium text-white">
-          {session?.organization_name ?? "Nusantara PayLater"}
+          {session?.organization_name ?? t("settings.workspaceFallback")}
         </p>
         <p className="mt-0.5 text-[10.5px] text-muted">
           {t("sidebar.orgSubtitle")}

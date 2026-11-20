@@ -71,7 +71,6 @@ const en: Dictionary = {
   "topbar.openNav": "Open navigation",
   "topbar.searchPlaceholder": "Search applications...",
   "topbar.searchAria": "Search applications",
-  "topbar.demoData": "Demo data",
   "topbar.language": "Language",
 
   "loader.preparing": "Preparing workspace...",
@@ -110,12 +109,6 @@ const en: Dictionary = {
   "login.errGeneric": "Unable to sign in.",
   "login.signingIn": "Signing in...",
   "login.signIn": "Sign in",
-  "login.demoAccounts": "Demo accounts",
-  "login.use": "Use",
-  "login.demoPassword": "Demo password:",
-  "login.demoSeededA": "Accounts are seeded with",
-  "login.demoSeededB":
-    "; change or remove them before a public deployment.",
   "login.footer": "Credora · Smarter Credit. Better Decisions.",
   "login.newHere": "New to Credora?",
   "login.createAccount": "Create an account",
@@ -137,18 +130,8 @@ const en: Dictionary = {
   "landing.point1": "Organization-isolated data",
   "landing.point2": "AI-assisted risk signals",
   "landing.point3": "Human-led decisions",
-  "landing.previewEyebrow": "Portfolio snapshot",
-  "landing.previewTitle": "Risk workspace",
-  "landing.previewTotal": "Total applications",
-  "landing.previewTotalHint": "Seeded demo records",
-  "landing.previewPending": "Pending review",
-  "landing.previewPendingHint": "Awaiting underwriting",
-  "landing.previewAssessed": "Assessed",
-  "landing.previewAssessedHint": "With a risk score",
-  "landing.previewHigh": "High risk",
-  "landing.previewHighHint": "Share of assessed",
-  "landing.previewDist": "Risk distribution",
-  "landing.previewDistSub": "Latest assessment",
+  "landing.previewEyebrow": "Workspace overview",
+  "landing.previewTitle": "Built for credit teams",
   "landing.previewGuardTitle": "Decision support only",
   "landing.previewGuardDesc": "Officers keep final authority",
   "landing.featuresEyebrow": "Capabilities",
@@ -199,9 +182,9 @@ const en: Dictionary = {
   "register.subtitle":
     "Set up your organization account to access the credit risk workspace.",
   "register.fullName": "Full name",
-  "register.fullNamePlaceholder": "e.g. Rani Prameswari",
+  "register.fullNamePlaceholder": "e.g. Jane Doe",
   "register.organization": "Organization name",
-  "register.organizationPlaceholder": "e.g. Nusantara PayLater",
+  "register.organizationPlaceholder": "e.g. Acme Finance",
   "register.role": "Your role",
   "register.passwordPlaceholder": "At least 8 characters",
   "register.confirmPassword": "Confirm password",
@@ -417,7 +400,7 @@ const en: Dictionary = {
   "newapp.cancelReturn": "Cancel and return",
   "newapp.validationNote": "Field validation note",
   "newapp.validationDesc":
-    "Check that income, loan amount, and interest rate are entered correctly before saving. Do not enter real customer data in this demo workspace.",
+    "Check that income, loan amount, and interest rate are entered correctly before saving. Enter only applicant information you are authorized to process.",
   "newapp.savingOpens": "Saving opens the application detail page.",
   "newapp.errName": "Enter the applicant's full name.",
   "newapp.errEmail": "Enter a valid email address.",
@@ -575,8 +558,9 @@ const en: Dictionary = {
   "settings.eyebrow": "Account",
   "settings.title": "Settings",
   "settings.description":
-    "Manage your profile and demo workspace.",
+    "Manage your profile and workspace preferences.",
   "settings.active": "Active session",
+  "settings.workspaceFallback": "Workspace",
   "settings.profileInfo": "Profile information",
   "settings.profileInfoSub":
     "Update the display name and contact email used in this workspace.",
@@ -588,15 +572,6 @@ const en: Dictionary = {
   "settings.securitySub": "How your account is protected.",
   "settings.securityDesc":
     "Use a unique password and sign out on shared devices. Contact your administrator if you notice unusual account activity.",
-  "settings.demoControls": "Demo data controls",
-  "settings.demoControlsSub":
-    "Reset the workspace to the seeded illustrative dataset.",
-  "settings.demoWarning":
-    "Resetting removes all applications, assessments, and reviews, then restores the original demo records.",
-  "settings.demoRestored": "Demo data restored.",
-  "settings.confirmReset": "Confirm reset",
-  "settings.resetDemo": "Reset demo data",
-  "settings.cancel": "Cancel",
   "settings.signOut": "Sign out",
   "settings.signOutSub": "End the current workspace session.",
   "settings.logout": "Logout",
@@ -710,10 +685,6 @@ const en: Dictionary = {
     "Estimated chance that this borrower will fail to repay. Lower is safer.",
   "hint.riskCategory":
     "Low, medium, or high risk, based on the default probability band.",
-
-  "demo.workspace": "Demo workspace.",
-  "demo.desc":
-    "Records are illustrative, and predictions are decision support only — final credit decisions remain with authorized officers.",
 };
 
 const id: Dictionary = {
@@ -761,7 +732,6 @@ const id: Dictionary = {
   "topbar.openNav": "Buka navigasi",
   "topbar.searchPlaceholder": "Cari aplikasi...",
   "topbar.searchAria": "Cari aplikasi",
-  "topbar.demoData": "Data demo",
   "topbar.language": "Bahasa",
 
   "loader.preparing": "Menyiapkan ruang kerja...",
@@ -800,11 +770,6 @@ const id: Dictionary = {
   "login.errGeneric": "Tidak dapat masuk.",
   "login.signingIn": "Sedang masuk...",
   "login.signIn": "Masuk",
-  "login.demoAccounts": "Akun demo",
-  "login.use": "Pakai",
-  "login.demoPassword": "Kata sandi demo:",
-  "login.demoSeededA": "Akun diisi dengan",
-  "login.demoSeededB": "; ubah atau hapus sebelum penerapan publik.",
   "login.footer": "Credora · Kredit Lebih Cerdas. Keputusan Lebih Baik.",
   "login.newHere": "Baru di Credora?",
   "login.createAccount": "Buat akun",
@@ -826,18 +791,8 @@ const id: Dictionary = {
   "landing.point1": "Data terisolasi per organisasi",
   "landing.point2": "Sinyal risiko berbantuan AI",
   "landing.point3": "Keputusan dipimpin manusia",
-  "landing.previewEyebrow": "Ringkasan portofolio",
-  "landing.previewTitle": "Ruang kerja risiko",
-  "landing.previewTotal": "Total aplikasi",
-  "landing.previewTotalHint": "Catatan demo terisi",
-  "landing.previewPending": "Menunggu peninjauan",
-  "landing.previewPendingHint": "Menunggu underwriting",
-  "landing.previewAssessed": "Dinilai",
-  "landing.previewAssessedHint": "Memiliki skor risiko",
-  "landing.previewHigh": "Risiko tinggi",
-  "landing.previewHighHint": "Porsi yang dinilai",
-  "landing.previewDist": "Distribusi risiko",
-  "landing.previewDistSub": "Penilaian terbaru",
+  "landing.previewEyebrow": "Ringkasan ruang kerja",
+  "landing.previewTitle": "Dibangun untuk tim kredit",
   "landing.previewGuardTitle": "Hanya dukungan keputusan",
   "landing.previewGuardDesc": "Petugas tetap berwenang",
   "landing.featuresEyebrow": "Kemampuan",
@@ -885,9 +840,9 @@ const id: Dictionary = {
   "register.subtitle":
     "Siapkan akun organisasi Anda untuk mengakses ruang kerja risiko kredit.",
   "register.fullName": "Nama lengkap",
-  "register.fullNamePlaceholder": "mis. Rani Prameswari",
+  "register.fullNamePlaceholder": "mis. Jane Doe",
   "register.organization": "Nama organisasi",
-  "register.organizationPlaceholder": "mis. Nusantara PayLater",
+  "register.organizationPlaceholder": "mis. Acme Finance",
   "register.role": "Peran Anda",
   "register.passwordPlaceholder": "Minimal 8 karakter",
   "register.confirmPassword": "Konfirmasi kata sandi",
@@ -1103,7 +1058,7 @@ const id: Dictionary = {
   "newapp.cancelReturn": "Batal dan kembali",
   "newapp.validationNote": "Catatan validasi kolom",
   "newapp.validationDesc":
-    "Periksa kembali pendapatan, jumlah pinjaman, dan suku bunga sebelum menyimpan. Jangan masukkan data pelanggan asli di ruang kerja demo ini.",
+    "Periksa kembali pendapatan, jumlah pinjaman, dan suku bunga sebelum menyimpan. Masukkan hanya data pemohon yang berhak Anda olah.",
   "newapp.savingOpens": "Menyimpan akan membuka halaman detail aplikasi.",
   "newapp.errName": "Masukkan nama lengkap pemohon.",
   "newapp.errEmail": "Masukkan alamat email yang valid.",
@@ -1260,8 +1215,9 @@ const id: Dictionary = {
   "settings.eyebrow": "Akun",
   "settings.title": "Pengaturan",
   "settings.description":
-    "Kelola profil dan ruang kerja demo Anda.",
+    "Kelola profil dan preferensi ruang kerja Anda.",
   "settings.active": "Sesi aktif",
+  "settings.workspaceFallback": "Ruang kerja",
   "settings.profileInfo": "Informasi profil",
   "settings.profileInfoSub":
     "Perbarui nama tampilan dan email kontak yang digunakan di ruang kerja ini.",
@@ -1273,15 +1229,6 @@ const id: Dictionary = {
   "settings.securitySub": "Bagaimana akun Anda dilindungi.",
   "settings.securityDesc":
     "Gunakan kata sandi unik dan keluar saat memakai perangkat bersama. Hubungi administrator jika Anda melihat aktivitas akun yang mencurigakan.",
-  "settings.demoControls": "Kontrol data demo",
-  "settings.demoControlsSub":
-    "Kembalikan ruang kerja ke kumpulan data ilustratif awal.",
-  "settings.demoWarning":
-    "Mengatur ulang akan menghapus semua aplikasi, penilaian, dan tinjauan, lalu memulihkan catatan demo asli.",
-  "settings.demoRestored": "Data demo dipulihkan.",
-  "settings.confirmReset": "Konfirmasi atur ulang",
-  "settings.resetDemo": "Atur ulang data demo",
-  "settings.cancel": "Batal",
   "settings.signOut": "Keluar",
   "settings.signOutSub": "Akhiri sesi ruang kerja saat ini.",
   "settings.logout": "Keluar",
@@ -1393,10 +1340,6 @@ const id: Dictionary = {
     "Perkiraan peluang peminjam gagal membayar. Semakin rendah, semakin aman.",
   "hint.riskCategory":
     "Risiko rendah, sedang, atau tinggi berdasarkan rentang probabilitas gagal bayar.",
-
-  "demo.workspace": "Ruang kerja demo.",
-  "demo.desc":
-    "Catatan bersifat ilustratif, dan prediksi hanya sebagai pendukung keputusan — keputusan kredit akhir tetap di tangan petugas yang berwenang.",
 };
 
 const dictionaries: Record<Locale, Dictionary> = { en, id };

@@ -15,7 +15,6 @@ import {
 } from "@/components/icons";
 import {
   Card,
-  DemoBanner,
   PageHeader,
   RiskBadge,
   SectionCard,
@@ -121,8 +120,6 @@ export default function PortfolioPage() {
           </select>
         }
       />
-
-      <DemoBanner />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard

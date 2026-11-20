@@ -65,11 +65,6 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
           />
         </form>
 
-        <span className="hidden items-center gap-1.5 rounded-full border border-sage/15 bg-sage/[0.06] px-2.5 py-1 text-[10px] font-medium text-sage xl:inline-flex">
-          <span className="h-1.5 w-1.5 rounded-full bg-sage" />
-          {t("topbar.demoData")}
-        </span>
-
         <LanguageSwitcher />
 
         <NotificationsMenu />

@@ -110,9 +110,6 @@ AUTH_EMAIL_FROM=
 ML_SERVICE_URL=
 ML_SERVICE_API_KEY=
 ML_IDR_PER_USD=4000
-
-# Seed demo assessments with the ML service (opsional)
-SEED_RESCORE_ML=
 ```
 
 Nilai aktual disimpan secara lokal atau pada konfigurasi deployment yang aman. Secret key tidak boleh diekspos ke browser atau dimasukkan ke repository.
@@ -135,7 +132,7 @@ Nilai aktual disimpan secara lokal atau pada konfigurasi deployment yang aman. S
 Implementasi database dan autentikasi sudah diterapkan:
 
 - Schema Neon tersedia di `db/schema.sql` dan dijalankan dengan `npm run db:migrate`.
-- Data demo di-seed melalui `npm run db:seed` (atau `npm run db:setup` untuk keduanya).
+- Verifikasi skema tersedia melalui `npm run db:check`.
 - Auth.js (credentials + JWT) terhubung ke tabel `users` dan `profiles`.
 - Data aplikasi diakses melalui route handler server dengan filter `organization_id`.
 - Store client tidak lagi memakai `localStorage`.

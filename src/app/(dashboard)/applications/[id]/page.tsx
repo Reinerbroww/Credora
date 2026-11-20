@@ -238,7 +238,9 @@ export default function ApplicationDetailPage() {
               />
               <InfoRow
                 label={t("detail.organization")}
-                value="Nusantara PayLater"
+                value={
+                  session?.organization_name ?? t("settings.workspaceFallback")
+                }
               />
             </div>
           </SectionCard>

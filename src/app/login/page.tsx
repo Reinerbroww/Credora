@@ -12,8 +12,8 @@ export default function LoginPage() {
   const router = useRouter();
   const { login, session, ready } = useCredora();
   const { t } = useI18n();
-  const [email, setEmail] = useState("analyst@credora.id");
-  const [password, setPassword] = useState("credora123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -122,59 +122,6 @@ export default function LoginPage() {
           <ArrowRightIcon className="h-4 w-4" />
         </button>
       </form>
-
-      <div className="mt-6 border-t border-line-soft pt-4">
-        <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-muted/70">
-          {t("login.demoAccounts")}
-        </p>
-        <div className="mt-2.5 grid gap-2">
-          <button
-            type="button"
-            onClick={() => {
-              setEmail("analyst@credora.id");
-              setPassword("credora123");
-              setError("");
-            }}
-            className="flex items-center justify-between rounded-lg border border-line bg-white/[0.02] px-3 py-2 text-left transition-colors hover:border-sage/25 hover:bg-white/[0.04]"
-          >
-            <span>
-              <span className="block text-[11.5px] font-medium text-white">
-                {t("role.Risk Analyst")}
-              </span>
-              <span className="block text-[10.5px] text-muted">
-                analyst@credora.id
-              </span>
-            </span>
-            <span className="text-[10px] text-sage">{t("login.use")}</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setEmail("officer@credora.id");
-              setPassword("credora123");
-              setError("");
-            }}
-            className="flex items-center justify-between rounded-lg border border-line bg-white/[0.02] px-3 py-2 text-left transition-colors hover:border-sage/25 hover:bg-white/[0.04]"
-          >
-            <span>
-              <span className="block text-[11.5px] font-medium text-white">
-                {t("role.Credit Officer")}
-              </span>
-              <span className="block text-[10.5px] text-muted">
-                officer@credora.id
-              </span>
-            </span>
-            <span className="text-[10px] text-sage">{t("login.use")}</span>
-          </button>
-        </div>
-        <p className="mt-2.5 text-[10px] leading-relaxed text-muted/60">
-          {t("login.demoPassword")}{" "}
-          <span className="font-mono text-muted">credora123</span>.{" "}
-          {t("login.demoSeededA")}{" "}
-          <span className="font-mono text-muted">npm run db:seed</span>
-          {t("login.demoSeededB")}
-        </p>
-      </div>
     </AuthShell>
   );
 }

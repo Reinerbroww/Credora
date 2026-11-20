@@ -11,9 +11,7 @@
         "test": "vitest run",
         "test:watch": "vitest",
         "db:migrate": "tsx scripts/migrate.ts",
-        "db:seed": "tsx scripts/seed.ts",
         "db:check": "tsx scripts/check.ts",
-        "db:setup": "npm run db:migrate && npm run db:seed",
         "ml:serve": "ml\\.venv\\Scripts\\python.exe -m uvicorn app:app --app-dir ml --host 127.0.0.1 --port 8000"
     },
     "dependencies": {

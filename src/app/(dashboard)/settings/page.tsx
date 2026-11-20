@@ -3,11 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import {
-  AlertIcon,
   CheckIcon,
-  DatabaseIcon,
   LogoutIcon,
-  RefreshIcon,
   ShieldIcon,
   UserIcon,
 } from "@/components/icons";
@@ -17,29 +14,17 @@ import { useCredora } from "@/lib/store";
 
 export default function SettingsPage() {
   const router = useRouter();
-  const { session, updateSession, resetDemoData, logout } = useCredora();
+  const { session, updateSession, logout } = useCredora();
   const { t, role } = useI18n();
   const [fullName, setFullName] = useState(session?.full_name ?? "");
   const [email, setEmail] = useState(session?.email ?? "");
   const [profileSaved, setProfileSaved] = useState(false);
-  const [confirmReset, setConfirmReset] = useState(false);
-  const [dataReset, setDataReset] = useState(false);
 
   const handleProfileSave = async (event: FormEvent) => {
     event.preventDefault();
     if (!fullName.trim() || !email.trim()) return;
     await updateSession({ full_name: fullName.trim(), email: email.trim() });
     setProfileSaved(true);
-  };
-
-  const handleReset = async () => {
-    if (!confirmReset) {
-      setConfirmReset(true);
-      return;
-    }
-    await resetDemoData();
-    setConfirmReset(false);
-    setDataReset(true);
   };
 
   const handleLogout = async () => {
@@ -69,7 +54,7 @@ export default function SettingsPage() {
                 </p>
                 <p className="text-[11.5px] text-muted">
                   {role(session?.role ?? "Risk Analyst")} ·{" "}
-                  {session?.organization_name ?? "Nusantara PayLater"}
+                  {session?.organization_name ?? t("settings.workspaceFallback")}
                 </p>
               </div>
               <span className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-sage/20 bg-sage/[0.08] px-2.5 py-1 text-[10px] font-medium text-sage">
@@ -140,52 +125,6 @@ export default function SettingsPage() {
           >
             <div className="space-y-3 text-[11.5px] leading-relaxed text-muted">
               <p>{t("settings.securityDesc")}</p>
-            </div>
-          </SectionCard>
-
-          <SectionCard
-            title={t("settings.demoControls")}
-            subtitle={t("settings.demoControlsSub")}
-            action={<DatabaseIcon className="h-4 w-4 text-muted" />}
-          >
-            <div className="flex items-start gap-2.5 rounded-lg border border-risk-mid/20 bg-risk-mid/[0.06] px-3.5 py-2.5">
-              <AlertIcon className="mt-0.5 h-4 w-4 shrink-0 text-risk-mid" />
-              <p className="text-[11px] leading-relaxed text-muted">
-                {t("settings.demoWarning")}
-              </p>
-            </div>
-
-            {dataReset && (
-              <div className="mt-3 flex items-center gap-2 rounded-lg border border-risk-low/25 bg-risk-low/10 px-3 py-2 text-[11.5px] text-[#8fd3ab]">
-                <CheckIcon className="h-4 w-4" />
-                {t("settings.demoRestored")}
-              </div>
-            )}
-
-            <div className="mt-3 flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={handleReset}
-                className={
-                  confirmReset
-                    ? "btn-primary"
-                    : "btn-secondary"
-                }
-              >
-                <RefreshIcon className="h-4 w-4" />
-                {confirmReset
-                  ? t("settings.confirmReset")
-                  : t("settings.resetDemo")}
-              </button>
-              {confirmReset && (
-                <button
-                  type="button"
-                  onClick={() => setConfirmReset(false)}
-                  className="btn-secondary"
-                >
-                  {t("settings.cancel")}
-                </button>
-              )}
             </div>
           </SectionCard>
 

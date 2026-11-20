@@ -15,7 +15,7 @@
 
 ## Abstract
 
-PayLater providers must process large volumes of credit applications, estimate the likelihood of default, and monitor aggregate portfolio risk. In many organizations these activities are distributed across disconnected tools, which obscures the rationale of risk estimates and complicates manual review. This document presents Credora, an applied web platform that integrates credit application management, machine-learning risk assessment, portfolio analytics, and underwriting review in a single system. The platform is implemented with Next.js 16, React 19, TypeScript, Tailwind CSS, and PostgreSQL hosted on Neon; authentication is provided by Auth.js with organization-scoped authorization enforced at the server layer. Risk scores are produced by a FastAPI service wrapping a pre-trained LightGBM classifier with 22 input features and three decision bands, with a transparent heuristic serving as an explicitly labeled fallback when the service is unavailable. The delivered MVP comprises ten pages covering the full analyst workflow, a reproducible database migration and seeding pipeline, containerized deployment for the scoring service, and an automated test suite. Reported classifier metrics from the upstream project (accuracy 93.01%, ROC-AUC 0.9476) are contextualized rather than treated as evidence of operational readiness: the model was trained on USD-scale data, has not been validated on labeled Indonesian PayLater data, and its outputs are advisory only. Future work centers on statistical validation, calibration, fairness assessment, and external data integration.
+PayLater providers must process large volumes of credit applications, estimate the likelihood of default, and monitor aggregate portfolio risk. In many organizations these activities are distributed across disconnected tools, which obscures the rationale of risk estimates and complicates manual review. This document presents Credora, an applied web platform that integrates credit application management, machine-learning risk assessment, portfolio analytics, and underwriting review in a single system. The platform is implemented with Next.js 16, React 19, TypeScript, Tailwind CSS, and PostgreSQL hosted on Neon; authentication is provided by Auth.js with organization-scoped authorization enforced at the server layer. Risk scores are produced by a FastAPI service wrapping a pre-trained LightGBM classifier with 22 input features and three decision bands, with a transparent heuristic serving as an explicitly labeled fallback when the service is unavailable. The delivered MVP comprises ten pages covering the full analyst workflow, a reproducible database migration pipeline, containerized deployment for the scoring service, and an automated test suite. Reported classifier metrics from the upstream project (accuracy 93.01%, ROC-AUC 0.9476) are contextualized rather than treated as evidence of operational readiness: the model was trained on USD-scale data, has not been validated on labeled Indonesian PayLater data, and its outputs are advisory only. Future work centers on statistical validation, calibration, fairness assessment, and external data integration.
 
 **Keywords:** credit risk, machine learning, LightGBM, PayLater, fintech, underwriting, portfolio analytics, Next.js, explainable AI
 
@@ -47,7 +47,7 @@ Included in the MVP: authentication and role-based access, application creation 
 
 ### 1.5 Contributions
 
-The repository contributes (i) an end-to-end reference architecture spanning a serverless Next.js application, Neon PostgreSQL, and a containerized Python inference service; (ii) a schema aligned to the 22-feature model contract with organization-level data isolation; (iii) an honest fallback strategy that labels heuristic results rather than silently substituting them; and (iv) reproducible migration, seeding, validation, and smoke-test procedures.
+The repository contributes (i) an end-to-end reference architecture spanning a serverless Next.js application, Neon PostgreSQL, and a containerized Python inference service; (ii) a schema aligned to the 22-feature model contract with organization-level data isolation; (iii) an honest fallback strategy that labels heuristic results rather than silently substituting them; and (iv) reproducible migration, validation, and smoke-test procedures.
 
 ---
 
@@ -126,7 +126,7 @@ The upstream classifier [7, 8] consumes 22 constructed features: seven numeric a
 | `0.35 – 0.70` | Medium Risk | `review` |
 | `> 0.70` | High Risk | `reject` |
 
-The TypeScript adapter groups the 22 contributions into five human-readable factors and converts IDR monetary values before inference. Because the model was trained on USD-scale data (mean income ≈ $66k), `ML_IDR_PER_USD` (default `4000`) is a **demonstration calibration factor, not a real exchange rate**.
+The TypeScript adapter groups the 22 contributions into five human-readable factors and converts IDR monetary values before inference. Because the model was trained on USD-scale data (mean income ≈ $66k), `ML_IDR_PER_USD` (default `4000`) is a **calibration factor, not a real exchange rate**.
 
 ### 3.6 Authentication and Authorization
 
@@ -167,23 +167,23 @@ The following figures were reported by the upstream project [6] and are **not** 
 | Type check | `npm run typecheck` | TypeScript compilation without emit |
 | Model contract | `python ml/validate_model.py` | Artifact and behavior checks against local model files |
 | HTTP smoke test | `python ml/smoke_test.py` | Live service health and prediction contract |
-| Database check | `npm run db:check` | Connection, demo accounts, and record counts |
+| Database check | `npm run db:check` | Schema, connectivity, and record counts |
 
 ---
 
 ## 5. Discussion
 
-The architecture separates inference from the web application so that model dependencies, scaling, and deployment can evolve independently. Explainability is treated as a functional requirement: SHAP contributions are grouped into labeled factors with direction and relative weight, allowing the reviewer to see which evidence moved a prediction. The heuristic fallback is deliberately named `Credora Heuristic` so that demo behavior is not mistaken for model output. Human authority is preserved by recording the final decision separately from the prediction.
+The architecture separates inference from the web application so that model dependencies, scaling, and deployment can evolve independently. Explainability is treated as a functional requirement: SHAP contributions are grouped into labeled factors with direction and relative weight, allowing the reviewer to see which evidence moved a prediction. The heuristic fallback is deliberately named `Credora Heuristic` so that heuristic output is not mistaken for model output. Human authority is preserved by recording the final decision separately from the prediction.
 
-A key engineering limitation is the conversion between IDR storage and USD-scale training data. This permits a functional demonstration but is not a defensible production calibration. Similarly, application-layer authorization is adequate for a single-service MVP but would benefit from defense in depth (database RLS or policy enforcement) as deployment scope grows.
+A key engineering limitation is the conversion between IDR storage and USD-scale training data. This permits functional operation but is not a defensible production calibration. Similarly, application-layer authorization is adequate for a single-service MVP but would benefit from defense in depth (database RLS or policy enforcement) as deployment scope grows.
 
 ---
 
 ## 6. Limitations and Threats to Validity
 
 - **Model validity.** Dataset relevance, leakage, class imbalance, probability calibration, threshold policy, and fairness have not been validated on labeled Indonesian PayLater data.
-- **Monetary scale.** Results depend on the demonstration calibration factor; retraining on IDR data is required for real decisions.
-- **Data provenance.** Seeded records and dashboard figures are illustrative, not real customer data.
+- **Monetary scale.** Results depend on the calibration factor; retraining on IDR data is required for real decisions.
+- **Data provenance.** No sample records are bundled; dashboard figures derive from workspace data entered by authorized users.
 - **Decision authority.** Predictions are advisory; the system must not be used for automated credit decisions.
 - **Security surface.** Organization isolation is enforced in application code; Neon RLS is optional and not currently configured.
 - **Scope.** No external financial data ingestion, B2C assessment, or in-app retraining is implemented.
@@ -210,7 +210,7 @@ Credora demonstrates that application management, interpretable risk scoring, po
 Copy `.env.example` to `.env.local` and supply:
 
 - `DATABASE_URL` — pooled connection used by the application runtime.
-- `DATABASE_URL_UNPOOLED` — direct connection used by migrations and seeding.
+- `DATABASE_URL_UNPOOLED` — direct connection used by migrations.
 - `AUTH_SECRET` — generate with `npx auth secret`.
 - `AUTH_URL` — application origin (`http://localhost:3000` locally).
 
@@ -218,10 +218,10 @@ Copy `.env.example` to `.env.local` and supply:
 
 ```bash
 npm install
-npm run db:setup
+npm run db:migrate
 ```
 
-`db:setup` applies `db/schema.sql` and seeds the demo workspace. Optional verification: `npm run db:check`.
+`db:migrate` applies `db/schema.sql`. Optional verification: `npm run db:check`.
 
 ### 8.4 Running the Application
 
@@ -229,14 +229,7 @@ npm run db:setup
 npm run dev
 ```
 
-Open `http://localhost:3000` and sign in with a demo account:
-
-| Role | Email | Password |
-|---|---|---|
-| Risk Analyst | `analyst@credora.id` | `credora123` |
-| Credit Officer | `officer@credora.id` | `credora123` |
-
-Change or remove the demo accounts before any public deployment.
+Open `http://localhost:3000` and create your organization account at `/register`. No shared credentials or sample accounts are provided.
 
 ### 8.5 Machine-Learning Service
 
@@ -251,16 +244,6 @@ The service listens on `http://127.0.0.1:8000` and exposes `/health`, `/model/in
 ```bash
 ML_SERVICE_URL="http://127.0.0.1:8000"
 ML_IDR_PER_USD="4000"
-```
-
-To re-score seeded assessments with the model:
-
-```powershell
-$env:SEED_RESCORE_ML="1"; npm run db:seed
-```
-
-```bash
-SEED_RESCORE_ML=1 npm run db:seed
 ```
 
 ### 8.6 Model Validation and Smoke Tests
@@ -285,7 +268,7 @@ The image serves on `$PORT` (default `8000`) and includes a `/health` healthchec
 ## 9. Deployment
 
 1. Set `DATABASE_URL`, `DATABASE_URL_UNPOOLED`, `AUTH_SECRET`, and `AUTH_URL` in the hosting environment (for example, Vercel).
-2. Run `npm run db:migrate` once against the production database; run `npm run db:seed` only for illustrative demo data.
+2. Run `npm run db:migrate` once against the production database.
 3. Keep `AUTH_SECRET` stable across deploys and set `AUTH_URL` to the deployed origin.
 4. Deploy the ML service separately and set `ML_SERVICE_URL` and `ML_SERVICE_API_KEY` when model-based scoring is desired.
 
@@ -312,8 +295,8 @@ The image serves on `$PORT` (default `8000`) and includes a `/health` healthchec
 src/app/                 App Router pages (auth and dashboard routes)
 src/components/          Reusable UI, charts, tables, navigation
 src/lib/                 Database, auth helpers, ML adapter, analytics, risk logic
-db/schema.sql            PostgreSQL schema and demo data structures
-scripts/                 migrate.ts, seed.ts, check.ts
+db/schema.sql            PostgreSQL schema
+scripts/                 migrate.ts, check.ts
 ml/                      FastAPI service, model artifacts, validation scripts, Dockerfile
 docs/                    Steps 0–6 planning documents and model artifacts
 ```
@@ -323,11 +306,10 @@ docs/                    Steps 0–6 planning documents and model artifacts
 | Variable | Required | Purpose |
 |---|---|---|
 | `DATABASE_URL` | Yes | Pooled Neon connection for runtime queries |
-| `DATABASE_URL_UNPOOLED` | Yes | Direct connection for migrations/seeding |
+| `DATABASE_URL_UNPOOLED` | Yes | Direct connection for migrations |
 | `AUTH_SECRET` | Yes | Auth.js signing secret |
 | `AUTH_URL` | Yes (deploy) | Canonical application origin |
 | `ML_SERVICE_URL` | No | Enables LightGBM scoring; empty means heuristic fallback |
 | `ML_SERVICE_API_KEY` | No | Bearer token expected by the ML service |
-| `ML_IDR_PER_USD` | No | Demo calibration factor (default `4000`) |
+| `ML_IDR_PER_USD` | No | Calibration factor (default `4000`) |
 | `ML_SERVICE_TIMEOUT_MS` | No | Inference timeout (default `8000`) |
-| `SEED_RESCORE_ML` | No | Set to `1` to score seeded assessments with the model |

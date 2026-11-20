@@ -19,7 +19,7 @@ Autentikasi tidak lagi menggunakan Supabase Auth. Credora menggunakan Auth.js (N
 
 Neon hanya menyediakan PostgreSQL tanpa layanan auth atau Row Level Security bawaan. Otorisasi data dijalankan pada lapisan aplikasi/server berdasarkan `organization_id`, dan RLS PostgreSQL bersifat opsional (lihat bagian 5).
 
-Schema aktual tersedia di `db/schema.sql` dan diterapkan dengan `npm run db:migrate`. Data demo di-seed dengan `npm run db:seed`, atau keduanya sekaligus dengan `npm run db:setup`.
+Schema aktual tersedia di `db/schema.sql` dan diterapkan dengan `npm run db:migrate`. Verifikasi opsional: `npm run db:check`.
 
 ## 2. Tabel Database
 

@@ -1,14 +1,6 @@
 import bcrypt from "bcryptjs";
 import { getSql } from "./db";
 import { assessWithModel } from "./ml-client";
-import {
-  ANALYST_ID,
-  DEMO_ACCOUNTS,
-  DEMO_ORGANIZATION_NAME,
-  DEMO_PASSWORD,
-  ORGANIZATION_ID,
-  createSeedData,
-} from "./mock-data";
 import type {
   Application,
   ApplicationInput,
@@ -390,103 +382,6 @@ export async function updateProfile(
   return getProfile(userId);
 }
 
-export async function resetOrganizationData(
-  organizationId: string,
-  fallbackUserId: string,
-): Promise<CredoraData> {
-  const sql = getSql();
-
-  const profileRows = await sql`
-    SELECT id, role FROM profiles WHERE organization_id = ${organizationId}
-  `;
-  const analystId =
-    (profileRows.find((row) => row.role === "Risk Analyst")?.id as
-      | string
-      | undefined) ?? fallbackUserId;
-  const officerId =
-    (profileRows.find((row) => row.role === "Credit Officer")?.id as
-      | string
-      | undefined) ?? fallbackUserId;
-
-  await sql`DELETE FROM applications WHERE organization_id = ${organizationId}`;
-
-  const seed = createSeedData();
-
-  for (const application of seed.applications) {
-    await sql`
-      INSERT INTO applications (
-        id, organization_id, applicant_name, applicant_email, age,
-        person_income, employment_length, loan_amnt, loan_int_rate,
-        loan_percent_income, home_ownership, loan_intent, loan_grade,
-        cb_person_cred_hist_length, cb_person_default_on_file, status,
-        created_by, created_at, updated_at
-      ) VALUES (
-        ${application.id}, ${organizationId}, ${application.applicant_name},
-        ${application.applicant_email}, ${application.age},
-        ${application.person_income}, ${application.employment_length},
-        ${application.loan_amnt}, ${application.loan_int_rate},
-        ${application.loan_percent_income}, ${application.home_ownership},
-        ${application.loan_intent}, ${application.loan_grade},
-        ${application.cb_person_cred_hist_length},
-        ${application.cb_person_default_on_file}, ${application.status},
-        ${analystId}, ${application.created_at}, ${application.updated_at}
-      )
-    `;
-  }
-
-  const rescoreWithMl = process.env.SEED_RESCORE_ML === "1";
-  const applicationsById = new Map(
-    seed.applications.map((application) => [application.id, application]),
-  );
-
-  for (const assessment of seed.assessments) {
-    let record = assessment;
-    if (rescoreWithMl) {
-      const application = applicationsById.get(assessment.application_id);
-      if (application) {
-        const result = await assessWithModel(application);
-        record = {
-          ...assessment,
-          model_name: result.model_name,
-          model_version: result.model_version,
-          default_probability: result.default_probability,
-          risk_category: result.risk_category,
-          contributing_factors: result.contributing_factors,
-        };
-      }
-    }
-
-    await sql`
-      INSERT INTO risk_assessments (
-        id, application_id, model_name, model_version, default_probability,
-        risk_category, contributing_factors, assessed_by, assessed_at
-      ) VALUES (
-        ${record.id}, ${record.application_id}, ${record.model_name},
-        ${record.model_version}, ${record.default_probability},
-        ${record.risk_category},
-        ${JSON.stringify(record.contributing_factors)}::jsonb,
-        ${analystId}, ${record.assessed_at}
-      )
-    `;
-  }
-
-  for (const review of seed.reviews) {
-    await sql`
-      INSERT INTO underwriting_reviews (
-        id, application_id, reviewer_id, review_status, final_decision,
-        decision_reason, review_notes, reviewed_at, created_at
-      ) VALUES (
-        ${review.id}, ${review.application_id}, ${officerId},
-        ${review.review_status}, ${review.final_decision},
-        ${review.decision_reason}, ${review.review_notes},
-        ${review.reviewed_at}, ${review.created_at}
-      )
-    `;
-  }
-
-  return listData(organizationId);
-}
-
 export interface RegisterAccountInput {
   full_name: string;
   organization_name: string;
@@ -527,36 +422,4 @@ export async function registerAccount(
   ]);
 
   return { id: userId };
-}
-
-export async function seedDemoOrganization(): Promise<void> {
-  const sql = getSql();
-  const passwordHash = await bcrypt.hash(DEMO_PASSWORD, 10);
-
-  await sql`
-    INSERT INTO organizations (id, name)
-    VALUES (${ORGANIZATION_ID}, ${DEMO_ORGANIZATION_NAME})
-    ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name
-  `;
-
-  for (const account of DEMO_ACCOUNTS) {
-    await sql`
-      INSERT INTO users (id, name, email, password_hash)
-      VALUES (${account.id}, ${account.full_name}, ${account.email}, ${passwordHash})
-      ON CONFLICT (id) DO UPDATE SET
-        name = EXCLUDED.name,
-        email = EXCLUDED.email,
-        password_hash = EXCLUDED.password_hash
-    `;
-    await sql`
-      INSERT INTO profiles (id, organization_id, full_name, role)
-      VALUES (${account.id}, ${ORGANIZATION_ID}, ${account.full_name}, ${account.role})
-      ON CONFLICT (id) DO UPDATE SET
-        organization_id = EXCLUDED.organization_id,
-        full_name = EXCLUDED.full_name,
-        role = EXCLUDED.role
-    `;
-  }
-
-  await resetOrganizationData(ORGANIZATION_ID, ANALYST_ID);
 }

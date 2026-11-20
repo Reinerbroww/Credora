@@ -354,21 +354,3 @@ export function InfoRow({
     </div>
   );
 }
-
-export function DemoBanner({ className }: { className?: string }) {
-  const { t } = useI18n();
-  return (
-    <div
-      className={cn(
-        "flex items-start gap-2.5 rounded-lg border border-sage/15 bg-sage/[0.06] px-3.5 py-2.5",
-        className,
-      )}
-    >
-      <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sage" />
-      <p className="text-[11.5px] leading-relaxed text-muted">
-        <span className="font-medium text-sage">{t("demo.workspace")}</span>{" "}
-        {t("demo.desc")}
-      </p>
-    </div>
-  );
-}

@@ -14,13 +14,7 @@ import {
   TrendIcon,
   UsersIcon,
 } from "@/components/icons";
-import {
-  Card,
-  DemoBanner,
-  PageHeader,
-  SectionCard,
-  StatCard,
-} from "@/components/ui";
+import { Card, PageHeader, SectionCard, StatCard } from "@/components/ui";
 import {
   applicationTrend,
   awaitingReviewCount,
@@ -106,8 +100,6 @@ export default function DashboardPage() {
           </>
         }
       />
-
-      <DemoBanner />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard

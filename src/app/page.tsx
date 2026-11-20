@@ -158,52 +158,25 @@ export default function LandingPage() {
                 </span>
               </div>
 
-              <div className="mt-5 grid grid-cols-2 gap-2.5">
-                {[
-                  { label: "landing.previewTotal", value: "128", hint: "landing.previewTotalHint" },
-                  { label: "landing.previewPending", value: "24", hint: "landing.previewPendingHint" },
-                  { label: "landing.previewAssessed", value: "104", hint: "landing.previewAssessedHint" },
-                  { label: "landing.previewHigh", value: "12%", hint: "landing.previewHighHint" },
-                ].map((item) => (
+              <div className="mt-5 grid gap-2.5">
+                {FEATURES.map(({ icon: Icon, titleKey, descriptionKey }) => (
                   <div
-                    key={item.label}
-                    className="rounded-xl border border-line bg-white/[0.02] p-3.5"
+                    key={titleKey}
+                    className="flex items-start gap-3 rounded-xl border border-line bg-white/[0.02] p-3.5 text-left"
                   >
-                    <p className="text-[9.5px] uppercase tracking-[0.12em] text-muted/80">
-                      {t(item.label)}
-                    </p>
-                    <p className="mt-1.5 text-[22px] font-semibold tracking-tight text-white">
-                      {item.value}
-                    </p>
-                    <p className="mt-0.5 text-[10px] text-muted">{t(item.hint)}</p>
+                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-sage/20 bg-sage/[0.08] text-sage">
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    <span>
+                      <span className="block text-[12px] font-medium text-white">
+                        {t(titleKey)}
+                      </span>
+                      <span className="mt-0.5 block text-[10.5px] leading-relaxed text-muted">
+                        {t(descriptionKey)}
+                      </span>
+                    </span>
                   </div>
                 ))}
-              </div>
-
-              <div className="mt-4 rounded-xl border border-line bg-white/[0.02] p-4">
-                <div className="flex items-center justify-between text-[10.5px] text-muted">
-                  <span>{t("landing.previewDist")}</span>
-                  <span>{t("landing.previewDistSub")}</span>
-                </div>
-                <div className="mt-3 flex h-2.5 overflow-hidden rounded-full">
-                  <span className="h-full w-[62%] bg-risk-low" />
-                  <span className="h-full w-[26%] bg-risk-mid" />
-                  <span className="h-full w-[12%] bg-risk-high" />
-                </div>
-                <div className="mt-2.5 flex items-center gap-4 text-[9.5px] text-muted">
-                  <span className="flex items-center gap-1.5">
-                    <span className="h-1.5 w-1.5 rounded-full bg-risk-low" />
-                    {t("risk.Low Risk")}
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="h-1.5 w-1.5 rounded-full bg-risk-mid" />
-                    {t("risk.Medium Risk")}
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="h-1.5 w-1.5 rounded-full bg-risk-high" />
-                    {t("risk.High Risk")}
-                  </span>
-                </div>
               </div>
             </div>
 
@@ -372,7 +345,7 @@ export default function LandingPage() {
           <Logo />
           <div className="flex flex-col gap-1 text-[10.5px] text-muted/60 sm:items-end">
             <span>{t("landing.footer")}</span>
-            <span>{t("demo.workspace")}</span>
+            <span>{t("shell.footerRight")}</span>
           </div>
         </div>
       </footer>
